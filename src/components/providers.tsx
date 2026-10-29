@@ -1,0 +1,86 @@
+"use client";
+
+import * as React from "react";
+import { ThemeProvider } from "next-themes";
+import { MotionConfig } from "framer-motion";
+import { ToastProvider } from "@/components/ui/toast";
+import { TooltipProvider } from "@/components/ui/controls";
+import { hydrateStore } from "@/lib/store";
+
+type MotionLevel = "full" | "reduced" | "minimal";
+
+interface MotionContextValue {
+  level: MotionLevel;
+  setLevel: (level: MotionLevel) => void;
+  systemReduced: boolean;
+}
+
+const MotionContext = React.createContext<MotionContextValue | undefined>(undefined);
+
+const STORAGE_KEY = "ponnaloy.atlas.motion";
+
+function MotionProvider({ children }: { children: React.ReactNode }) {
+  const [level, setLevelState] = React.useState<MotionLevel>("full");
+  const [systemReduced, setSystemReduced] = React.useState(false);
+
+  React.useEffect(() => {
+    const query = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setSystemReduced(query.matches);
+    const stored = window.localStorage.getItem(STORAGE_KEY) as MotionLevel | null;
+    const resolved = stored ?? (query.matches ? "reduced" : "full");
+    setLevelState(resolved);
+    document.documentElement.dataset.motion = resolved;
+
+    const onChange = (event: MediaQueryListEvent) => {
+      setSystemReduced(event.matches);
+      if (!window.localStorage.getItem(STORAGE_KEY)) {
+        const next = event.matches ? "reduced" : "full";
+        setLevelState(next);
+        document.documentElement.dataset.motion = next;
+      }
+    };
+    query.addEventListener("change", onChange);
+    return () => query.removeEventListener("change", onChange);
+  }, []);
+
+  const setLevel = React.useCallback((next: MotionLevel) => {
+    setLevelState(next);
+    window.localStorage.setItem(STORAGE_KEY, next);
+    document.documentElement.dataset.motion = next;
+  }, []);
+
+  return (
+    <MotionContext.Provider value={{ level, setLevel, systemReduced }}>
+      <MotionConfig reducedMotion={level === "full" ? "never" : "always"}>
+        {children}
+      </MotionConfig>
+    </MotionContext.Provider>
+  );
+}
+
+export function useMotionLevel() {
+  const context = React.useContext(MotionContext);
+  if (!context) throw new Error("useMotionLevel must be used inside Providers");
+  return context;
+}
+
+function StoreHydrator({ children }: { children: React.ReactNode }) {
+  React.useEffect(() => {
+    hydrateStore();
+  }, []);
+  return children;
+}
+
+export function Providers({ children }: { children: React.ReactNode }) {
+  return (
+    <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
+      <MotionProvider>
+        <ToastProvider>
+          <TooltipProvider delayDuration={250} skipDelayDuration={80}>
+            <StoreHydrator>{children}</StoreHydrator>
+          </TooltipProvider>
+        </ToastProvider>
+      </MotionProvider>
+    </ThemeProvider>
+  );
+}

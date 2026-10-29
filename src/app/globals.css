@@ -1,0 +1,309 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================================
+   ATLAS DESIGN SYSTEM — semantic tokens
+   Editorial Precision × Digital Luxury × Enterprise Clarity
+   ============================================================ */
+
+@layer base {
+  :root {
+    /* Warm ivory foundation */
+    --canvas: 40 33% 96%;
+    --surface: 40 40% 98%;
+    --surface-raised: 0 0% 100%;
+    --ink: 150 8% 12%;
+    --ink-soft: 150 5% 32%;
+    --ink-faint: 145 4% 46%;
+    --line: 38 20% 86%;
+    --line-strong: 38 16% 74%;
+
+    /* Deep teal signature */
+    --teal: 172 58% 22%;
+    --teal-deep: 174 63% 14%;
+    --teal-soft: 170 34% 90%;
+
+    /* Restrained copper accent */
+    --copper: 18 55% 48%;
+    --copper-soft: 24 55% 92%;
+
+    --success: 152 44% 30%;
+    --warning: 36 72% 38%;
+    --danger: 4 62% 44%;
+    --info: 205 60% 38%;
+
+    --radius: 0.625rem;
+    --header-height: 4.25rem;
+
+    /* Motion tokens */
+    --duration-instant: 90ms;
+    --duration-fast: 160ms;
+    --duration-base: 260ms;
+    --duration-slow: 520ms;
+    --duration-narrative: 820ms;
+    --ease-atlas: cubic-bezier(0.22, 1, 0.36, 1);
+    --ease-entrance: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-exit: cubic-bezier(0.4, 0, 1, 1);
+
+    /* Elevation */
+    --shadow-whisper: 0 1px 2px hsl(var(--ink) / 0.04), 0 14px 34px -22px hsl(var(--ink) / 0.28);
+    --shadow-lift: 0 28px 70px -36px hsl(var(--ink) / 0.4);
+
+    color-scheme: light;
+  }
+
+  .dark {
+    --canvas: 156 11% 7%;
+    --surface: 156 10% 9%;
+    --surface-raised: 156 9% 12%;
+    --ink: 40 24% 93%;
+    --ink-soft: 40 10% 70%;
+    --ink-faint: 40 7% 55%;
+    --line: 154 8% 18%;
+    --line-strong: 154 8% 28%;
+
+    --teal: 168 42% 58%;
+    --teal-deep: 172 50% 82%;
+    --teal-soft: 170 20% 16%;
+
+    --copper: 22 62% 60%;
+    --copper-soft: 22 30% 16%;
+
+    --success: 150 40% 58%;
+    --warning: 38 70% 60%;
+    --danger: 5 60% 62%;
+    --info: 205 55% 62%;
+
+    color-scheme: dark;
+  }
+
+  * {
+    @apply border-line;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-padding-top: calc(var(--header-height) + 1.5rem);
+  }
+
+  body {
+    @apply bg-canvas font-sans text-ink antialiased;
+    font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background: hsl(var(--teal) / 0.18);
+    color: hsl(var(--ink));
+  }
+
+  :focus-visible {
+    outline: 2px solid hsl(var(--teal));
+    outline-offset: 3px;
+  }
+
+  h1, h2, h3, h4 {
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  button, [role="button"], a {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  input, textarea, select {
+    font: inherit;
+  }
+
+  /* Text zoom safety */
+  @media (min-width: 320px) {
+    body { min-width: 320px; }
+  }
+}
+
+@layer components {
+  .atlas-container {
+    @apply mx-auto w-full max-w-[1480px] px-5 sm:px-6 lg:px-8 xl:px-10;
+  }
+
+  .eyebrow {
+    @apply font-mono text-2xs uppercase tracking-[0.18em] text-ink-faint;
+  }
+
+  .rule {
+    @apply h-px w-full bg-line;
+  }
+
+  .editorial-link {
+    @apply relative inline-flex items-center gap-2 text-sm font-medium text-ink transition-colors duration-[var(--duration-fast)] hover:text-teal;
+  }
+
+  .editorial-link::after {
+    content: "";
+    @apply absolute -bottom-1 left-0 h-px w-full origin-left scale-x-0 bg-current transition-transform duration-[var(--duration-base)] ease-atlas;
+  }
+
+  .editorial-link:hover::after,
+  .editorial-link:focus-visible::after {
+    @apply scale-x-100;
+  }
+
+  .surface-panel {
+    @apply rounded-xl border border-line bg-surface-raised;
+    box-shadow: var(--shadow-whisper);
+  }
+
+  .inset-panel {
+    @apply rounded-lg border border-line bg-surface;
+  }
+
+  .hairline-grid {
+    background-image:
+      linear-gradient(to right, hsl(var(--line) / 0.55) 1px, transparent 1px),
+      linear-gradient(to bottom, hsl(var(--line) / 0.55) 1px, transparent 1px);
+    background-size: 72px 72px;
+  }
+
+  .paper-grain {
+    position: relative;
+  }
+
+  .paper-grain::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    mix-blend-mode: multiply;
+  }
+
+  .dark .paper-grain::after {
+    mix-blend-mode: screen;
+    opacity: 0.05;
+  }
+
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--line-strong)) transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: hsl(var(--line-strong));
+    border-radius: 999px;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .focus-ring {
+    @apply outline-none focus-visible:ring-2 focus-visible:ring-teal focus-visible:ring-offset-2 focus-visible:ring-offset-canvas;
+  }
+
+  .status-dot {
+    @apply inline-block h-1.5 w-1.5 rounded-full bg-current;
+  }
+
+  .table-scroll {
+    @apply overflow-x-auto scrollbar-thin;
+  }
+
+  .skeleton-shimmer {
+    background: linear-gradient(
+      90deg,
+      hsl(var(--line) / 0.5) 25%,
+      hsl(var(--line) / 0.2) 50%,
+      hsl(var(--line) / 0.5) 75%
+    );
+    background-size: 200% 100%;
+    @apply animate-shimmer;
+  }
+
+  .display-accent {
+    font-variation-settings: "SOFT" 30, "WONK" 1;
+    font-style: italic;
+  }
+
+  .textured-panel {
+    background-color: hsl(var(--teal));
+    background-image:
+      radial-gradient(circle at 18% 12%, hsl(var(--teal-deep) / 0.65), transparent 46%),
+      radial-gradient(circle at 82% 88%, hsl(var(--copper) / 0.28), transparent 52%);
+    color: hsl(var(--surface));
+  }
+}
+
+@layer utilities {
+  .text-balance { text-wrap: balance; }
+  .text-pretty { text-wrap: pretty; }
+  .clip-reveal { clip-path: inset(0 0 0 0); }
+
+  .mask-fade-x {
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
+    mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
+  }
+
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  .tabular {
+    font-variant-numeric: tabular-nums lining-nums;
+  }
+}
+
+/* ============================================================
+   Motion profiles
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+html[data-motion="reduced"] *,
+html[data-motion="reduced"] *::before,
+html[data-motion="reduced"] *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 120ms !important;
+}
+
+html[data-motion="minimal"] *,
+html[data-motion="minimal"] *::before,
+html[data-motion="minimal"] *::after {
+  animation: none !important;
+  transition: none !important;
+}
+
+/* Native scrollbar on Windows */
+@supports not (scrollbar-color: auto) {
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: hsl(var(--canvas)); }
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--line-strong));
+    border: 3px solid hsl(var(--canvas));
+    border-radius: 999px;
+  }
+}
