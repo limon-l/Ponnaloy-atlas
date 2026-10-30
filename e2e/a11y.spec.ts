@@ -5,6 +5,19 @@ import { waitForAtlas } from "./helpers";
 const SERIOUS = ["serious", "critical"] as const;
 
 async function audit(page: Page) {
+  // Entrance choreography fades content in. Audit the settled interface rather
+  // than a mid-transition frame (motion itself is covered by separate tests).
+  await page
+    .waitForFunction(
+      () => {
+        const animated = Array.from(document.querySelectorAll<HTMLElement>("main [style*='opacity']"));
+        return animated.every((node) => Number(getComputedStyle(node).opacity) > 0.99);
+      },
+      undefined,
+      { timeout: 4000 }
+    )
+    .catch(() => undefined);
+  await page.waitForTimeout(150);
   return new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"]).analyze();
 }
 
@@ -14,7 +27,11 @@ function seriousViolations(results: Awaited<ReturnType<typeof audit>>) {
     .map((violation) => ({
       id: violation.id,
       impact: violation.impact,
-      nodes: violation.nodes.map((node) => node.target.join(" ")),
+      nodes: violation.nodes.map((node) => ({
+        target: node.target.join(" "),
+        html: node.html.slice(0, 220),
+        summary: node.failureSummary,
+      })),
     }));
 }
 

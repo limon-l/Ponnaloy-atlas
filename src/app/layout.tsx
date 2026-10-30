@@ -8,6 +8,11 @@ const display = Fraunces({
   variable: "--font-display",
   display: "swap",
   axes: ["SOFT", "WONK", "opsz"],
+  // The metric-adjusted fallback is wider than Fraunces at display sizes and
+  // wraps the hero headline onto an extra line, causing a 0.116 CLS on first
+  // load. The unadjusted serif fallback keeps the same line count (Times
+  // wraps at 2 lines like Fraunces), so the swap no longer moves the layout.
+  adjustFontFallback: false,
 });
 
 const sans = Manrope({

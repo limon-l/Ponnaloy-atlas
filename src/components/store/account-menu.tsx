@@ -66,15 +66,15 @@ export function AccountMenu() {
         <button
           type="button"
           className="focus-ring flex h-10 items-center gap-2 rounded-md px-1.5 text-ink-soft transition-colors hover:bg-ink/[0.05] hover:text-ink sm:px-2"
-          aria-label={`${name.split(" ")[0]} account menu. Signed in as ${name}, ${roleLabels[state.role]}`}
         >
-          <span aria-hidden="true" className="grid size-8 place-items-center rounded-full bg-teal text-[0.6875rem] font-semibold text-white">
+          <span className="grid size-8 place-items-center rounded-full bg-teal text-[0.6875rem] font-semibold text-white">
             {initials(name)}
           </span>
           <span className="hidden items-center gap-1.5 md:flex">
             <span className="max-w-24 truncate text-xs font-medium text-ink">{name.split(" ")[0]}</span>
             <ChevronDown className="size-3 text-ink-faint" aria-hidden="true" />
           </span>
+          <span className="sr-only">account menu. Signed in as {name}, {roleLabels[state.role]}</span>
         </button>
       </PopoverTrigger>
       <PopoverContent className="w-[min(92vw,20rem)] p-0">

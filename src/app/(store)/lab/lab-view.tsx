@@ -154,7 +154,7 @@ export function LabView() {
               <span className="h-px w-6 bg-copper-bright" aria-hidden="true" />
               Design &amp; motion lab
             </p>
-            <h1 className="mt-4 max-w-3xl font-display text-display-sm text-white">
+            <h1 className="mt-4 min-h-[1.96em] max-w-3xl font-display text-display-sm text-white">
               One system.
               <span className="display-accent text-copper-bright"> Five surfaces.</span>
             </h1>

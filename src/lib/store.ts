@@ -71,6 +71,10 @@ function resolvedCatalogue(current: AtlasState): Product[] {
 }
 
 function setState(updater: (current: AtlasState) => AtlasState) {
+  // A child mount effect can run before the hydration effect. Without this
+  // guard, that first mutation would persist the seed snapshot and overwrite
+  // any saved demo state (edits, orders, role) already in localStorage.
+  if (typeof window !== "undefined" && !state.hydrated) hydrateStore();
   state = { ...updater(state), hydrated: state.hydrated };
   persist(state);
   emit();
@@ -586,18 +590,21 @@ export function resolveReturn(orderId: string, approve: boolean): StoreResult {
 /* ------------------------------------------------------------------ */
 
 export function updateStock(productId: string, variantId: string | undefined, stock: number): StoreResult {
-  if (stock < 0 || !Number.isFinite(stock)) return { ok: false, error: "Stock must be zero or greater." };
+  if (!Number.isInteger(stock) || stock < 0) return { ok: false, error: "Stock must be a whole number of zero or greater." };
   setState((current) => {
     const product = productById([...seedProducts, ...current.createdProducts], productId);
     if (!product) return current;
     if (variantId) {
+      // Merge against the edited catalogue, not the seed. Otherwise changing
+      // one variant would silently revert every other variant in the product.
+      const currentVariants = current.productEdits[productId]?.variants ?? product.variants;
       return {
         ...current,
         productEdits: {
           ...current.productEdits,
           [productId]: {
             ...current.productEdits[productId],
-            variants: product.variants.map((variant) =>
+            variants: currentVariants.map((variant) =>
               variant.id === variantId ? { ...variant, stock } : variant
             ),
           },

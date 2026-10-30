@@ -116,6 +116,6 @@ test.describe("responsive shell", () => {
 
     await page.getByRole("button", { name: "Open navigation menu" }).click();
     await expect(page.getByRole("dialog")).toBeVisible();
-    await expect(page.getByRole("navigation", { name: /navigation/i })).toBeVisible();
+    await expect(page.getByRole("navigation", { name: "Mobile primary" })).toBeVisible();
   });
 });

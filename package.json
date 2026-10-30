@@ -14,6 +14,7 @@
     "e2e": "playwright test",
     "e2e:ci": "pnpm build && playwright test",
     "e2e:install": "playwright install chromium",
+    "perf:lab": "node scripts/measure-vitals.mjs",
     "verify": "pnpm typecheck && pnpm lint && pnpm test && pnpm build"
   },
   "dependencies": {

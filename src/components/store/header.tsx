@@ -151,6 +151,7 @@ export function Header() {
               onClick={() => setSearchOpen(true)}
               className="focus-ring hidden h-10 items-center gap-2.5 rounded-md border border-line bg-surface-raised px-3 text-xs text-ink-faint transition-colors hover:border-line-strong hover:text-ink sm:flex"
               aria-label="Search ⌘K"
+              aria-keyshortcuts="Meta+K"
             >
               <Search className="size-4" aria-hidden="true" />
               <span>Search</span>
