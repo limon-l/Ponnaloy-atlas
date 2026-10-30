@@ -54,7 +54,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
               onOpenChange={(open) => {
                 if (!open) setItems((current) => current.filter((entry) => entry.id !== item.id));
               }}
-              className="pointer-events-auto flex w-[min(92vw,24rem)] items-start gap-3 rounded-lg border border-line bg-surface-raised p-4 shadow-lift data-[state=closed]:animate-out data-[state=closed]:fade-out-80 data-[state=closed]:slide-out-to-right-full data-[state=open]:animate-in data-[state=open]:slide-in-from-right-full"
+              className="pointer-events-auto flex w-[min(92vw,24rem)] items-start gap-3 rounded-xl border border-line bg-popover p-4 text-popover-foreground shadow-lift data-[state=closed]:animate-out data-[state=closed]:fade-out-80 data-[state=closed]:slide-out-to-right-full data-[state=open]:animate-in data-[state=open]:slide-in-from-right-full data-[state=open]:zoom-in-95"
             >
               <Icon className={cn("mt-0.5 size-4 shrink-0", toneClass[item.tone])} aria-hidden="true" />
               <div className="min-w-0 flex-1">

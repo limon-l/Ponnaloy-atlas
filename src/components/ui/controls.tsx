@@ -20,7 +20,7 @@ export const TooltipContent = React.forwardRef<
       ref={ref}
       sideOffset={sideOffset}
       className={cn(
-        "z-[90] max-w-64 rounded-md border border-line bg-ink px-2.5 py-1.5 text-xs text-canvas shadow-whisper data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=delayed-open]:animate-in data-[state=delayed-open]:fade-in-0",
+        "z-[90] max-w-64 rounded-md border border-deep-foreground/10 bg-deep px-2.5 py-1.5 text-xs text-deep-foreground shadow-lift data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=delayed-open]:animate-in data-[state=delayed-open]:fade-in-0 data-[state=delayed-open]:zoom-in-95",
         className
       )}
       {...props}
@@ -53,12 +53,12 @@ const Switch = React.forwardRef<
   <SwitchPrimitive.Root
     ref={ref}
     className={cn(
-      "focus-ring peer inline-flex h-6 w-10 shrink-0 cursor-pointer items-center rounded-full border border-transparent bg-line-strong transition-colors data-[state=checked]:bg-teal disabled:cursor-not-allowed disabled:opacity-50",
+      "focus-ring peer inline-flex h-6 w-10 shrink-0 cursor-pointer items-center rounded-full border border-transparent bg-line-strong transition-[background-color] data-[state=checked]:bg-teal disabled:cursor-not-allowed disabled:opacity-50",
       className
     )}
     {...props}
   >
-    <SwitchPrimitive.Thumb className="pointer-events-none block size-[1.125rem] translate-x-0.5 rounded-full bg-surface-raised shadow-whisper transition-transform data-[state=checked]:translate-x-[1.15rem]" />
+    <SwitchPrimitive.Thumb className="pointer-events-none block size-[1.125rem] translate-x-0.5 rounded-full bg-surface-raised shadow-whisper transition-transform duration-200 ease-atlas data-[state=checked]:translate-x-[1.15rem]" />
   </SwitchPrimitive.Root>
 ));
 Switch.displayName = "Switch";
@@ -70,7 +70,7 @@ const Checkbox = React.forwardRef<
   <CheckboxPrimitive.Root
     ref={ref}
     className={cn(
-      "focus-ring peer size-[1.125rem] shrink-0 rounded-xs border border-line-strong bg-surface-raised transition-colors data-[state=checked]:border-teal data-[state=checked]:bg-teal data-[state=checked]:text-white disabled:cursor-not-allowed disabled:opacity-50",
+      "focus-ring peer size-[1.125rem] shrink-0 rounded-xs border border-line-strong bg-surface-raised transition-[background-color,border-color,color,transform] data-[state=checked]:border-teal data-[state=checked]:bg-teal data-[state=checked]:text-primary-foreground disabled:cursor-not-allowed disabled:opacity-50",
       className
     )}
     {...props}

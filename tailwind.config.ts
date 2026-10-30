@@ -11,9 +11,16 @@ const config: Config = {
     },
     extend: {
       colors: {
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
         canvas: "hsl(var(--canvas))",
-        surface: "hsl(var(--surface))",
+        surface: {
+          DEFAULT: "hsl(var(--surface))",
+          raised: "hsl(var(--surface-raised))",
+          inset: "hsl(var(--surface-inset))",
+        },
         "surface-raised": "hsl(var(--surface-raised))",
+        "surface-inset": "hsl(var(--surface-inset))",
         ink: "hsl(var(--ink))",
         "ink-soft": "hsl(var(--ink-soft))",
         "ink-faint": "hsl(var(--ink-faint))",
@@ -28,6 +35,53 @@ const config: Config = {
           DEFAULT: "hsl(var(--copper))",
           soft: "hsl(var(--copper-soft))",
           bright: "hsl(var(--copper-bright))",
+        },
+        primary: {
+          DEFAULT: "hsl(var(--primary))",
+          hover: "hsl(var(--primary-hover))",
+          foreground: "hsl(var(--primary-foreground))",
+        },
+        secondary: {
+          DEFAULT: "hsl(var(--secondary))",
+          foreground: "hsl(var(--secondary-foreground))",
+        },
+        muted: {
+          DEFAULT: "hsl(var(--muted))",
+          foreground: "hsl(var(--muted-foreground))",
+        },
+        accent: {
+          DEFAULT: "hsl(var(--accent))",
+          bright: "hsl(var(--accent-bright))",
+          foreground: "hsl(var(--accent-foreground))",
+        },
+        destructive: {
+          DEFAULT: "hsl(var(--destructive))",
+          foreground: "hsl(var(--destructive-foreground))",
+        },
+        card: {
+          DEFAULT: "hsl(var(--card))",
+          foreground: "hsl(var(--card-foreground))",
+        },
+        popover: {
+          DEFAULT: "hsl(var(--popover))",
+          foreground: "hsl(var(--popover-foreground))",
+        },
+        border: "hsl(var(--border))",
+        input: "hsl(var(--input))",
+        ring: "hsl(var(--ring))",
+        skeleton: "hsl(var(--skeleton))",
+        overlay: "hsl(var(--overlay))",
+        deep: {
+          DEFAULT: "hsl(var(--deep))",
+          foreground: "hsl(var(--deep-foreground))",
+          muted: "hsl(var(--deep-muted))",
+        },
+        chart: {
+          1: "hsl(var(--chart-1))",
+          2: "hsl(var(--chart-2))",
+          3: "hsl(var(--chart-3))",
+          4: "hsl(var(--chart-4))",
+          5: "hsl(var(--chart-5))",
         },
         success: "hsl(var(--success))",
         warning: "hsl(var(--warning))",
@@ -55,8 +109,13 @@ const config: Config = {
         "2xl": "32px",
       },
       boxShadow: {
-        whisper: "0 1px 2px hsl(var(--ink) / 0.04), 0 12px 32px -20px hsl(var(--ink) / 0.25)",
-        lift: "0 24px 60px -32px hsl(var(--ink) / 0.35)",
+        whisper: "0 1px 2px hsl(var(--shadow-color) / 0.05), 0 16px 38px -26px hsl(var(--shadow-color) / 0.42)",
+        lift: "0 32px 76px -40px hsl(var(--shadow-color) / 0.58)",
+        inset: "inset 0 1px 0 hsl(0 0% 100% / 0.06)",
+      },
+      backgroundImage: {
+        "aura-mesh":
+          "radial-gradient(ellipse 70% 55% at 12% 0%, hsl(var(--teal) / 0.10), transparent 62%), radial-gradient(ellipse 55% 45% at 92% 8%, hsl(var(--copper-bright) / 0.12), transparent 60%)",
       },
       spacing: {
         "4.5": "1.125rem",
@@ -75,6 +134,7 @@ const config: Config = {
         base: "var(--duration-base)",
         slow: "var(--duration-slow)",
         narrative: "var(--duration-narrative)",
+        theme: "180ms",
       },
       transitionTimingFunction: {
         atlas: "cubic-bezier(0.22, 1, 0.36, 1)",

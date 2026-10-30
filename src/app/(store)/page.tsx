@@ -69,24 +69,28 @@ export default function HomePage() {
       {/* ------------------------------------------------------------ */}
       {/* Hero                                                          */}
       {/* ------------------------------------------------------------ */}
-      <section className="relative overflow-hidden border-b border-line">
-        <div className="pointer-events-none absolute inset-0 hairline-grid opacity-[0.35]" aria-hidden="true" />
+      <section className="relative overflow-hidden border-b border-line aura-mesh">
+        <div className="pointer-events-none absolute inset-0 hairline-grid opacity-[0.28] dark:opacity-[0.18]" aria-hidden="true" />
+        <div
+          className="pointer-events-none absolute -right-32 top-0 size-[34rem] rounded-full bg-[radial-gradient(circle,hsl(var(--teal)/0.16),transparent_68%)] blur-3xl"
+          aria-hidden="true"
+        />
         <div className="atlas-container relative grid items-center gap-12 pb-16 pt-12 lg:grid-cols-[1.05fr_1fr] lg:gap-16 lg:pb-24 lg:pt-20">
           <div className="max-w-2xl">
-            <p className="eyebrow flex items-center gap-2">
+            <p className="eyebrow flex animate-fade-up items-center gap-2">
               <span className="h-px w-8 bg-copper" aria-hidden="true" />
               Autumn edit · MMXXVI
             </p>
-            <h1 className="mt-6 font-display text-display-md text-ink">
+            <h1 className="mt-6 animate-fade-up text-balance font-display text-display-md text-ink [animation-delay:60ms]">
               Objects for a
               <span className="display-accent text-teal"> considered </span>
               life.
             </h1>
-            <p className="mt-6 max-w-xl text-base leading-relaxed text-ink-soft sm:text-lg">
+            <p className="mt-6 max-w-xl animate-fade-up text-base leading-relaxed text-ink-soft [animation-delay:140ms] sm:text-lg">
               A marketplace for independent studios, built as five connected surfaces: an editorial storefront, a
               comparison studio, a seller workspace, an operations centre and a motion lab.
             </p>
-            <div className="mt-8 flex flex-wrap items-center gap-3">
+            <div className="mt-8 flex animate-fade-up flex-wrap items-center gap-3 [animation-delay:200ms]">
               <Button asChild size="lg">
                 <Link href="/products">
                   Shop the edit
@@ -97,7 +101,7 @@ export default function HomePage() {
                 <Link href="/collections">Explore collections</Link>
               </Button>
             </div>
-            <dl className="mt-10 grid max-w-lg grid-cols-3 gap-4 border-t border-line pt-6">
+            <dl className="mt-10 grid max-w-lg animate-fade-up grid-cols-3 gap-4 border-t border-line pt-6 [animation-delay:260ms]">
               {[
                 [String(approved.length), "objects"],
                 [String(sellers.length), "studios"],
@@ -117,13 +121,18 @@ export default function HomePage() {
 
           <Reveal className="relative" distance={24}>
             <div className="relative ml-auto w-full max-w-[30rem]">
-              <div className="overflow-hidden rounded-xl border border-line shadow-lift">
+              <div
+                className="pointer-events-none absolute -inset-6 rounded-[2rem] bg-[radial-gradient(circle_at_60%_30%,hsl(var(--copper-bright)/0.18),transparent_65%)] blur-2xl"
+                aria-hidden="true"
+              />
+              <div className="relative overflow-hidden rounded-2xl border border-line bg-surface-raised shadow-lift">
                 <div className="aspect-[4/5]">
                   <StillLifeArt palette={quietHours.palette} variant={1} />
                 </div>
+                <div className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-white/10" aria-hidden="true" />
               </div>
 
-              <div className="absolute -left-4 top-8 hidden w-40 rounded-lg border border-line bg-surface-raised/95 p-3 shadow-whisper backdrop-blur sm:block lg:-left-12">
+              <div className="absolute -left-4 top-8 hidden w-40 animate-fade-up rounded-lg border border-line bg-surface-raised/95 p-3 shadow-whisper backdrop-blur [animation-delay:320ms] sm:block lg:-left-12">
                 <p className="font-mono text-[0.5625rem] uppercase tracking-[0.14em] text-copper">Collection 01</p>
                 <p className="mt-1 font-display text-lg leading-tight tracking-[-0.02em]">The Quiet Hours</p>
                 <Link href={`/collections/${quietHours.slug}`} className="mt-2 inline-flex items-center gap-1 text-2xs text-teal hover:underline">
@@ -133,9 +142,9 @@ export default function HomePage() {
 
               <Link
                 href={`/product/${heroProduct.slug}`}
-                className="focus-ring group absolute -bottom-5 -left-2 flex w-[15rem] items-center gap-3 rounded-lg border border-line bg-surface-raised/95 p-2.5 shadow-lift backdrop-blur transition-transform duration-300 hover:-translate-y-0.5 sm:-left-8"
+                className="focus-ring group absolute -bottom-5 -left-2 flex w-[15rem] animate-fade-up items-center gap-3 rounded-xl border border-line bg-surface-raised/95 p-2.5 shadow-lift backdrop-blur transition-transform duration-300 [animation-delay:380ms] hover:-translate-y-0.5 sm:-left-8"
               >
-                <span className="size-16 shrink-0 overflow-hidden rounded-md">
+                <span className="size-16 shrink-0 overflow-hidden rounded-lg">
                   <ProductArt art={heroProduct.art} palette={heroProduct.palette} />
                 </span>
                 <span className="min-w-0">
@@ -163,7 +172,9 @@ export default function HomePage() {
               key={value.title}
               className={`flex gap-3.5 py-6 lg:px-6 ${index > 0 ? "border-t border-line lg:border-l lg:border-t-0" : ""} ${index === 1 ? "sm:border-l sm:border-t-0" : ""} ${index === 2 ? "lg:border-l" : ""}`}
             >
-              <value.icon className="mt-0.5 size-4 shrink-0 text-copper" aria-hidden="true" />
+              <span className="mt-0.5 grid size-8 shrink-0 place-items-center rounded-full bg-copper-soft text-copper">
+                <value.icon className="size-3.5" aria-hidden="true" />
+              </span>
               <div>
                 <p className="text-xs font-semibold uppercase tracking-[0.1em] text-ink">{value.title}</p>
                 <p className="mt-1 text-xs leading-relaxed text-ink-soft">{value.body}</p>
@@ -191,7 +202,7 @@ export default function HomePage() {
               <Reveal key={category.slug} delay={index * 45}>
                 <Link
                   href={`/products?category=${category.slug}`}
-                  className="focus-ring group relative block overflow-hidden rounded-lg border border-line bg-surface-raised transition-[border-color,transform] duration-300 hover:-translate-y-0.5 hover:border-line-strong"
+                  className="focus-ring group relative block overflow-hidden rounded-xl border border-line bg-surface-raised transition-[border-color,transform,box-shadow] duration-300 hover:-translate-y-0.5 hover:border-line-strong hover:shadow-whisper"
                 >
                   <span className="block aspect-square overflow-hidden">
                     <span className="block h-full w-full transition-transform duration-500 group-hover:scale-[1.04]">
@@ -202,12 +213,12 @@ export default function HomePage() {
                       />
                     </span>
                   </span>
-                  <span className="absolute inset-x-0 bottom-0 flex items-end justify-between bg-gradient-to-t from-ink/55 to-transparent p-3 pt-8">
+                  <span className="absolute inset-x-0 bottom-0 flex items-end justify-between bg-gradient-to-t from-deep/85 via-deep/25 to-transparent p-3 pt-10">
                     <span>
-                      <span className="block text-sm font-medium text-white">{category.name}</span>
-                      <span className="block text-2xs text-white/70">{count} objects</span>
+                      <span className="block text-sm font-medium text-deep-foreground">{category.name}</span>
+                      <span className="block text-2xs text-deep-foreground/70">{count} objects</span>
                     </span>
-                    <ArrowUpRight className="size-3.5 text-white/80 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" aria-hidden="true" />
+                    <ArrowUpRight className="size-3.5 text-deep-foreground/85 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" aria-hidden="true" />
                   </span>
                 </Link>
               </Reveal>
@@ -291,19 +302,19 @@ export default function HomePage() {
       {/* Editorial quote                                               */}
       {/* ------------------------------------------------------------ */}
       <section className="atlas-container pb-16 lg:pb-24">
-        <Reveal className="relative overflow-hidden rounded-xl textured-panel paper-grain px-7 py-14 sm:px-12 lg:px-20 lg:py-20">
-          <Quote className="size-8 text-copper" aria-hidden="true" />
-          <blockquote className="mt-6 max-w-3xl font-display text-3xl leading-[1.12] tracking-[-0.03em] text-white sm:text-4xl lg:text-5xl">
+        <Reveal className="relative overflow-hidden rounded-2xl textured-panel paper-grain px-7 py-14 sm:px-12 lg:px-20 lg:py-20">
+          <Quote className="size-8 text-copper-bright" aria-hidden="true" />
+          <blockquote className="mt-6 max-w-3xl text-balance font-display text-3xl leading-[1.12] tracking-[-0.03em] text-deep-foreground sm:text-4xl lg:text-5xl">
             “The most sustainable object is the one you keep. Everything else is logistics.”
           </blockquote>
-          <div className="mt-8 flex flex-wrap items-center justify-between gap-6 border-t border-white/15 pt-6">
+          <div className="mt-8 flex flex-wrap items-center justify-between gap-6 border-t border-deep-foreground/15 pt-6">
             <div>
-              <p className="text-sm font-medium text-white">Ines Marchetti</p>
-              <p className="mt-0.5 text-xs text-white/55">Founder, Northwind Atelier · Aarhus</p>
+              <p className="text-sm font-medium text-deep-foreground">Ines Marchetti</p>
+              <p className="mt-0.5 text-xs text-deep-foreground/60">Founder, Northwind Atelier · Aarhus</p>
             </div>
-            <div className="flex flex-wrap gap-2 text-2xs text-white/65">
+            <div className="flex flex-wrap gap-2 text-2xs text-deep-foreground/70">
               {["Oiled oak", "Undyed wool", "Stoneware", "Brass"].map((material) => (
-                <span key={material} className="rounded-full border border-white/20 px-3 py-1">
+                <span key={material} className="rounded-full border border-deep-foreground/20 px-3 py-1">
                   {material}
                 </span>
               ))}
@@ -328,7 +339,7 @@ export default function HomePage() {
               <Reveal key={seller.id} delay={index * 70}>
                 <Link
                   href={`/sellers/${seller.slug}`}
-                  className="focus-ring group flex h-full flex-col overflow-hidden rounded-lg border border-line bg-surface-raised transition-[border-color,transform] duration-300 hover:-translate-y-0.5 hover:border-line-strong"
+                  className="focus-ring group flex h-full flex-col overflow-hidden rounded-xl border border-line bg-surface-raised transition-[border-color,transform,box-shadow] duration-300 hover:-translate-y-0.5 hover:border-line-strong hover:shadow-whisper"
                 >
                   <span className="relative block aspect-[16/10] overflow-hidden">
                     <StillLifeArt palette={seller.palette} variant={(index + 1) as 1 | 2 | 3} />
@@ -360,14 +371,15 @@ export default function HomePage() {
       {/* ------------------------------------------------------------ */}
       <section className="atlas-container py-16 lg:py-24">
         <div className="grid gap-4 lg:grid-cols-[1.4fr_1fr]">
-          <Reveal className="relative overflow-hidden rounded-xl border border-line bg-ink p-7 text-canvas sm:p-10">
+          <Reveal className="relative overflow-hidden rounded-2xl border border-line bg-deep p-7 text-deep-foreground sm:p-10">
             <div className="pointer-events-none absolute inset-0 hairline-grid opacity-[0.12]" aria-hidden="true" />
+            <div className="pointer-events-none absolute -right-20 -top-20 size-64 rounded-full bg-[radial-gradient(circle,hsl(var(--teal)/0.35),transparent_70%)] blur-2xl" aria-hidden="true" />
             <div className="relative">
-              <p className="eyebrow text-copper">One marketplace, five surfaces</p>
-              <h2 className="mt-3 max-w-md font-display text-display-xs text-white">
+              <p className="eyebrow text-copper-bright">One marketplace, five surfaces</p>
+              <h2 className="mt-3 max-w-md text-balance font-display text-display-xs text-deep-foreground">
                 Follow one order from discovery to payout.
               </h2>
-              <p className="mt-3 max-w-lg text-sm leading-relaxed text-canvas/65">
+              <p className="mt-3 max-w-lg text-sm leading-relaxed text-deep-foreground/65">
                 The journey map connects the storefront, comparison studio, seller fulfilment, admin operations and the
                 design lab. Every step is interactive and reflects the same demo state.
               </p>
@@ -375,9 +387,9 @@ export default function HomePage() {
                 {["Discover", "Compare", "Buy", "Fulfil", "Operate", "Measure"].map((step, index) => (
                   <span
                     key={step}
-                    className="inline-flex items-center gap-2 rounded-full border border-white/15 px-3 py-1.5 text-2xs text-canvas/70"
+                    className="inline-flex items-center gap-2 rounded-full border border-deep-foreground/15 px-3 py-1.5 text-2xs text-deep-foreground/70"
                   >
-                    <span className="font-mono text-copper">0{index + 1}</span>
+                    <span className="font-mono text-copper-bright">0{index + 1}</span>
                     {step}
                   </span>
                 ))}
@@ -390,10 +402,12 @@ export default function HomePage() {
             </div>
           </Reveal>
 
-          <Reveal delay={80} className="flex flex-col justify-between rounded-xl border border-line bg-copper-soft p-7 sm:p-10">
+          <Reveal delay={80} className="flex flex-col justify-between rounded-2xl border border-line bg-copper-soft p-7 sm:p-10">
             <div>
-              <Sparkles className="size-5 text-copper" aria-hidden="true" />
-              <h2 className="mt-4 font-display text-2xl tracking-[-0.02em] text-ink">Design & motion lab</h2>
+              <span className="grid size-10 place-items-center rounded-full bg-surface-raised/70 text-copper shadow-whisper">
+                <Sparkles className="size-5" aria-hidden="true" />
+              </span>
+              <h2 className="mt-4 text-balance font-display text-2xl tracking-[-0.02em] text-ink">Design & motion lab</h2>
               <p className="mt-2 text-sm leading-relaxed text-ink-soft">
                 Inspect the tokens, type scale, chart primitives and three motion profiles — including reduced and minimal.
               </p>
@@ -419,13 +433,15 @@ export default function HomePage() {
           <div className="mt-8 grid gap-4 md:grid-cols-3">
             {journal.map((entry, index) => (
               <Reveal key={entry.title} delay={index * 60}>
-                <article className="group h-full overflow-hidden rounded-lg border border-line bg-surface-raised">
+                <article className="group h-full overflow-hidden rounded-xl border border-line bg-surface-raised transition-[border-color,box-shadow] duration-300 hover:border-line-strong hover:shadow-whisper">
                   <div className="aspect-[16/10] overflow-hidden">
-                    <StillLifeArt palette={entry.palette} variant={entry.variant} />
+                    <div className="h-full w-full transition-transform duration-[720ms] ease-atlas group-hover:scale-[1.035]">
+                      <StillLifeArt palette={entry.palette} variant={entry.variant} />
+                    </div>
                   </div>
                   <div className="p-5">
                     <p className="font-mono text-[0.625rem] uppercase tracking-[0.12em] text-copper">{entry.kicker}</p>
-                    <h3 className="mt-2 font-display text-xl leading-snug tracking-[-0.02em] text-ink">{entry.title}</h3>
+                    <h3 className="mt-2 text-balance font-display text-xl leading-snug tracking-[-0.02em] text-ink">{entry.title}</h3>
                     <p className="mt-2 text-xs leading-relaxed text-ink-soft">{entry.excerpt}</p>
                     <span className="mt-4 inline-flex items-center gap-1.5 text-2xs font-medium text-ink-faint">
                       Demo article <ArrowRight className="size-3" aria-hidden="true" />

@@ -15,78 +15,162 @@ import type { Product } from "@/lib/types";
 import { addToCart, toggleCompare, toggleWishlist, useAtlasState } from "@/lib/store";
 import { cn, formatMoney } from "@/lib/utils";
 
+export type ProductCardVariant = "standard" | "compact" | "featured" | "horizontal" | "deal" | "related";
+
+const MEDIA_ASPECT: Record<ProductCardVariant, string> = {
+  standard: "aspect-[4/5]",
+  compact: "aspect-square",
+  featured: "aspect-[5/6]",
+  horizontal: "aspect-square",
+  deal: "aspect-[4/5]",
+  related: "aspect-[4/5]",
+};
+
+function totalStock(product: Product) {
+  return product.stock + product.variants.reduce((sum, variant) => sum + variant.stock, 0);
+}
+
 export function ProductCard({
   product,
   sellerName,
   className,
   compact = false,
+  variant,
 }: {
   product: Product;
   sellerName?: string;
   className?: string;
   compact?: boolean;
+  variant?: ProductCardVariant;
 }) {
+  const resolved: ProductCardVariant = variant ?? (compact ? "compact" : "standard");
   const state = useAtlasState();
   const { toast } = useToast();
-  const testimonial = product.reviewCount > 0 ? product.reviewCount : undefined;
   const saved = state.wishlist.includes(product.id);
   const comparing = state.compare.includes(product.id);
   const discount = discountPercent(product);
   const available = inStock(product);
+  const stock = totalStock(product);
+  const lowStock = available && stock > 0 && stock <= 6;
   const [quickViewOpen, setQuickViewOpen] = React.useState(false);
-  const defaultVariant = product.variants.find((variant) => variant.stock > 0) ?? product.variants[0];
+  const [justAdded, setJustAdded] = React.useState(false);
+  const addedTimer = React.useRef<number | null>(null);
+
+  const defaultVariant = product.variants.find((entry) => entry.stock > 0) ?? product.variants[0];
   const [quickViewVariant, setQuickViewVariant] = React.useState<string | undefined>(defaultVariant?.id);
   const selectedQuickViewVariant =
-    product.variants.find((variant) => variant.id === quickViewVariant) ?? defaultVariant;
+    product.variants.find((entry) => entry.id === quickViewVariant) ?? defaultVariant;
   const quickViewStock = selectedQuickViewVariant?.stock ?? 0;
   const quickViewPrice = product.price + (selectedQuickViewVariant?.priceDelta ?? 0);
 
+  React.useEffect(() => {
+    return () => {
+      if (addedTimer.current) window.clearTimeout(addedTimer.current);
+    };
+  }, []);
+
+  const markAdded = () => {
+    setJustAdded(true);
+    if (addedTimer.current) window.clearTimeout(addedTimer.current);
+    addedTimer.current = window.setTimeout(() => setJustAdded(false), 1400);
+  };
+
+  const addToBag = (variantId?: string, quantity = 1) => {
+    const result = addToCart(product.id, variantId, quantity);
+    toast({
+      title: result.ok ? `${product.name} added to bag` : "Could not add to bag",
+      description: result.ok ? "Demo basket · no payment will be taken." : result.error,
+      tone: result.ok ? "success" : "error",
+    });
+    if (result.ok) markAdded();
+    return result.ok;
+  };
+
+  const save = () => {
+    const result = toggleWishlist(product.id);
+    if (result.ok) {
+      toast({
+        title: saved ? "Removed from wishlist" : "Saved to wishlist",
+        description: saved ? undefined : "Find it in your wishlist at any time.",
+        tone: "info",
+      });
+    }
+  };
+
+  const compare = () => {
+    const result = toggleCompare(product.id);
+    toast({
+      title: result.ok
+        ? comparing
+          ? "Removed from comparison"
+          : "Added to comparison"
+        : "Comparison is full",
+      description: result.ok ? undefined : result.error,
+      tone: result.ok ? "info" : "error",
+    });
+  };
+
+  const horizontal = resolved === "horizontal";
+  const compactCard = resolved === "compact";
+  const featured = resolved === "featured";
+  const deal = resolved === "deal";
+  const related = resolved === "related";
+
   return (
     <article
+      data-variant={resolved}
       className={cn(
-        "group relative flex h-full flex-col overflow-hidden rounded-xl border border-line bg-surface-raised transition-[border-color,box-shadow,transform] duration-base ease-atlas hover:-translate-y-0.5 hover:border-line-strong hover:shadow-whisper focus-within:border-line-strong",
+        "group relative flex h-full overflow-hidden rounded-xl border border-line bg-surface-raised transition-[border-color,box-shadow,transform] duration-base ease-atlas hover:-translate-y-0.5 hover:border-line-strong hover:shadow-whisper focus-within:border-line-strong",
+        horizontal ? "flex-row" : "flex-col",
+        featured && "rounded-2xl shadow-whisper",
+        deal && "border-copper/35",
+        compactCard && "rounded-lg",
         className
       )}
     >
-      <div className="relative">
+      <div className={cn("relative shrink-0", horizontal ? "w-[42%] self-stretch" : "w-full")}>
         <Link
           href={`/product/${product.slug}`}
-          className="focus-ring block aspect-[4/5] overflow-hidden bg-surface"
+          className={cn(
+            "focus-ring block overflow-hidden bg-surface",
+            horizontal ? "h-full min-h-36" : MEDIA_ASPECT[resolved]
+          )}
           aria-label={`${product.name} by ${sellerName ?? product.brand}`}
         >
-          <span className="block h-full w-full transition-transform duration-slow ease-atlas group-hover:scale-[1.025]">
+          <span className="block h-full w-full transition-transform duration-[720ms] ease-atlas group-hover:scale-[1.035]">
             <ProductArt art={product.art} palette={product.palette} />
           </span>
+          <span
+            className="pointer-events-none absolute inset-0 bg-gradient-to-t from-deep/25 via-transparent to-transparent opacity-0 transition-opacity duration-base group-hover:opacity-100"
+            aria-hidden="true"
+          />
         </Link>
 
         <div className="pointer-events-none absolute left-3 top-3 flex flex-col items-start gap-1.5">
           {product.newArrival && <Badge variant="solid">New</Badge>}
           {product.bestseller && <Badge variant="teal">Bestseller</Badge>}
           {discount !== null && <Badge variant="copper">−{discount}%</Badge>}
+          {deal && <Badge variant="copper">Deal</Badge>}
           {!available && <Badge variant="neutral">Sold out</Badge>}
         </div>
 
-        <div className="absolute right-3 top-3 flex flex-col gap-1.5">
+        <div
+          className={cn(
+            "absolute right-3 top-3 flex flex-col gap-1.5",
+            "opacity-100 transition-[opacity,transform] duration-base sm:translate-y-1 sm:opacity-0 sm:group-hover:translate-y-0 sm:group-hover:opacity-100 sm:group-focus-within:translate-y-0 sm:group-focus-within:opacity-100"
+          )}
+        >
           <SimpleTooltip label={saved ? "Remove from wishlist" : "Save to wishlist"}>
             <button
               type="button"
               aria-pressed={saved}
-              onClick={() => {
-                const result = toggleWishlistSafe(product.id);
-                if (result.ok) {
-                  toast({
-                    title: saved ? "Removed from wishlist" : "Saved to wishlist",
-                    description: saved ? undefined : "Find it in your wishlist at any time.",
-                    tone: "info",
-                  });
-                }
-              }}
+              onClick={save}
               className={cn(
-                "focus-ring flex size-9 items-center justify-center rounded-full border border-line/80 bg-surface-raised/90 text-ink-soft shadow-whisper backdrop-blur transition-colors hover:text-ink",
-                saved && "border-copper/30 text-copper"
+                "focus-ring flex size-9 items-center justify-center rounded-full border border-line/80 bg-surface-raised/92 text-ink-soft shadow-whisper backdrop-blur transition-[color,border-color,transform] hover:text-ink active:scale-90",
+                saved && "border-copper/40 text-copper"
               )}
             >
-              <Heart className={cn("size-4", saved && "fill-copper")} aria-hidden="true" />
+              <Heart className={cn("size-4 transition-transform", saved && "scale-110 fill-copper")} aria-hidden="true" />
               <span className="sr-only">{saved ? "Remove from wishlist" : "Save to wishlist"}</span>
             </button>
           </SimpleTooltip>
@@ -94,7 +178,7 @@ export function ProductCard({
             <button
               type="button"
               onClick={() => setQuickViewOpen(true)}
-              className="focus-ring flex size-9 items-center justify-center rounded-full border border-line/80 bg-surface-raised/90 text-ink-soft shadow-whisper backdrop-blur transition-colors hover:text-ink"
+              className="focus-ring flex size-9 items-center justify-center rounded-full border border-line/80 bg-surface-raised/92 text-ink-soft shadow-whisper backdrop-blur transition-[color,transform] hover:text-ink active:scale-90"
             >
               <Eye className="size-4" aria-hidden="true" />
               <span className="sr-only">Quick view {product.name}</span>
@@ -104,21 +188,10 @@ export function ProductCard({
             <button
               type="button"
               aria-pressed={comparing}
-              onClick={() => {
-                const result = toggleCompareSafe(product.id);
-                toast({
-                  title: result.ok
-                    ? comparing
-                      ? "Removed from comparison"
-                      : "Added to comparison"
-                    : "Comparison is full",
-                  description: result.ok ? undefined : result.error,
-                  tone: result.ok ? "info" : "error",
-                });
-              }}
+              onClick={compare}
               className={cn(
-                "focus-ring flex size-9 items-center justify-center rounded-full border border-line/80 bg-surface-raised/90 text-ink-soft shadow-whisper backdrop-blur transition-colors hover:text-ink",
-                comparing && "border-teal/30 text-teal"
+                "focus-ring flex size-9 items-center justify-center rounded-full border border-line/80 bg-surface-raised/92 text-ink-soft shadow-whisper backdrop-blur transition-[color,border-color,transform] hover:text-ink active:scale-90",
+                comparing && "border-teal/40 text-teal"
               )}
             >
               <Scale className="size-4" aria-hidden="true" />
@@ -128,48 +201,81 @@ export function ProductCard({
         </div>
       </div>
 
-      <div className={cn("flex flex-1 flex-col p-4", compact && "p-3.5")}>
+      <div
+        className={cn(
+          "flex min-w-0 flex-1 flex-col",
+          compactCard ? "p-3" : featured ? "p-5" : horizontal ? "p-4" : "p-4"
+        )}
+      >
         <div className="flex items-center justify-between gap-2">
           <p className="truncate text-2xs uppercase tracking-[0.12em] text-ink-faint">{sellerName ?? product.brand}</p>
           <span className="inline-flex shrink-0 items-center gap-1 text-2xs text-ink-soft">
             <Star className="size-3 fill-copper text-copper" aria-hidden="true" />
             <span className="tabular">{product.rating > 0 ? product.rating.toFixed(1) : "—"}</span>
-            {testimonial && <span className="text-ink-faint">({testimonial})</span>}
+            {product.reviewCount > 0 && <span className="sr-only">from {product.reviewCount} reviews</span>}
           </span>
         </div>
 
-        <h3 className="mt-1.5 font-display text-lg leading-snug tracking-[-0.015em] text-ink">
+        <h3
+          id={`product-${product.id}-title`}
+          className={cn(
+            "mt-1.5 text-balance font-display leading-snug tracking-[-0.015em] text-ink",
+            compactCard ? "text-[0.9375rem]" : featured ? "text-xl" : "text-lg"
+          )}
+        >
           <Link href={`/product/${product.slug}`} className="focus-ring rounded-xs">
             {product.name}
           </Link>
         </h3>
-        <p className="mt-0.5 line-clamp-1 text-xs text-ink-faint">{product.subtitle}</p>
+
+        {!compactCard && !related && (
+          <p className={cn("mt-0.5 text-xs text-ink-faint", horizontal ? "line-clamp-2" : "line-clamp-1")}>
+            {product.subtitle}
+          </p>
+        )}
+
+        {lowStock && (
+          <p className="mt-2 inline-flex w-fit items-center gap-1.5 rounded-full bg-warning/10 px-2 py-0.5 text-[0.625rem] font-medium text-warning">
+            <span className="size-1.5 rounded-full bg-warning" aria-hidden="true" />
+            Only {stock} left
+          </p>
+        )}
 
         <div className="mt-auto flex items-end justify-between gap-3 pt-4">
-          <div>
+          <div className="min-w-0">
             <p className="tabular text-sm font-semibold text-ink">{formatMoney(product.price)}</p>
             {product.compareAtPrice && product.compareAtPrice > product.price && (
               <p className="tabular text-2xs text-ink-faint line-through">{formatMoney(product.compareAtPrice)}</p>
             )}
           </div>
-          <Button
-            size="icon-sm"
-            variant={available ? "primary" : "quiet"}
-            disabled={!available}
-            onClick={() => {
-              if (!available) return;
-              const variant = product.variants.find((item) => item.stock > 0) ?? product.variants[0];
-              const result = addToBagSafe(product.id, variant?.id);
-              toast({
-                title: result.ok ? `${product.name} added to bag` : "Could not add to bag",
-                description: result.ok ? "Demo basket · no payment will be taken." : result.error,
-                tone: result.ok ? "success" : "error",
-              });
-            }}
-            aria-label={available ? `Add ${product.name} to bag` : `${product.name} is sold out`}
-          >
-            {available ? <Plus aria-hidden="true" /> : <Check aria-hidden="true" />}
-          </Button>
+          <SimpleTooltip label={available ? "Add to bag" : "Sold out"}>
+            <Button
+              size="icon-sm"
+              variant={justAdded ? "copper" : available ? "primary" : "quiet"}
+              disabled={!available}
+              onClick={() => {
+                if (!available) return;
+                const entry = product.variants.find((item) => item.stock > 0) ?? product.variants[0];
+                addToBag(entry?.id);
+              }}
+              aria-label={available ? `Add ${product.name} to bag` : `${product.name} is sold out`}
+            >
+              <span className="relative grid size-4 place-items-center" aria-hidden="true">
+                <Plus
+                  className={cn(
+                    "absolute size-4 transition-all duration-200",
+                    justAdded ? "rotate-90 scale-50 opacity-0" : "rotate-0 scale-100 opacity-100"
+                  )}
+                />
+                <Check
+                  className={cn(
+                    "absolute size-4 transition-all duration-200",
+                    justAdded ? "scale-100 opacity-100" : "scale-50 opacity-0"
+                  )}
+                />
+              </span>
+            </Button>
+          </SimpleTooltip>
         </div>
       </div>
 
@@ -208,10 +314,10 @@ export function ProductCard({
                   className="mt-1.5"
                   aria-label={`Choose ${product.variantLabel} for ${product.name}`}
                 >
-                  {product.variants.map((variant) => (
-                    <option key={variant.id} value={variant.id} disabled={variant.stock <= 0}>
-                      {variant.option} · {formatMoney(product.price + variant.priceDelta)}
-                      {variant.stock <= 0 ? " — sold out" : ""}
+                  {product.variants.map((entry) => (
+                    <option key={entry.id} value={entry.id} disabled={entry.stock <= 0}>
+                      {entry.option} · {formatMoney(product.price + entry.priceDelta)}
+                      {entry.stock <= 0 ? " — sold out" : ""}
                     </option>
                   ))}
                 </Select>
@@ -225,15 +331,8 @@ export function ProductCard({
                 <Button
                   disabled={quickViewStock <= 0}
                   onClick={() => {
-                    const result = addToBagSafe(product.id, selectedQuickViewVariant?.id);
-                    toast({
-                      title: result.ok ? `${product.name} added to bag` : "Could not add to bag",
-                      description: result.ok
-                        ? `${selectedQuickViewVariant?.option ?? product.variantLabel} · demo basket, no payment taken.`
-                        : result.error,
-                      tone: result.ok ? "success" : "error",
-                    });
-                    if (result.ok) setQuickViewOpen(false);
+                    const ok = addToBag(selectedQuickViewVariant?.id);
+                    if (ok) setQuickViewOpen(false);
                   }}
                 >
                   {quickViewStock > 0 ? "Add to bag" : "Sold out"}
@@ -252,16 +351,4 @@ export function ProductCard({
       </Dialog>
     </article>
   );
-}
-
-/* The store is a singleton module; these wrappers keep the component readable
-   while still calling the imported mutations through one place. */
-function toggleWishlistSafe(id: string) {
-  return toggleWishlist(id);
-}
-function toggleCompareSafe(id: string) {
-  return toggleCompare(id);
-}
-function addToBagSafe(id: string, variantId?: string) {
-  return addToCart(id, variantId, 1);
 }

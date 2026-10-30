@@ -9,30 +9,79 @@
 
 @layer base {
   :root {
-    /* Warm ivory foundation */
-    --canvas: 40 33% 96%;
-    --surface: 40 40% 98%;
+    /* ----------------------------------------------------------
+       AURA palette — refined ivory & deep teal
+       All colours are HSL channels consumed as hsl(var(--token)).
+       ---------------------------------------------------------- */
+
+    /* Foundation */
+    --canvas: 151 17% 98%;
+    --surface: 150 15% 95%;
     --surface-raised: 0 0% 100%;
-    --ink: 150 8% 12%;
-    --ink-soft: 150 5% 32%;
-    --ink-faint: 145 5% 42%;
-    --line: 38 20% 86%;
-    --line-strong: 38 16% 74%;
+    --surface-inset: 150 12% 97%;
 
-    /* Deep teal signature */
-    --teal: 172 58% 22%;
-    --teal-deep: 174 63% 14%;
-    --teal-soft: 170 34% 90%;
+    /* Text */
+    --ink: 160 32% 11%;
+    --ink-soft: 157 11% 37%;
+    --ink-faint: 156 10% 41%;
 
-    /* Restrained copper accent */
-    --copper: 18 55% 41%;
-    --copper-soft: 24 55% 92%;
-    --copper-bright: 26 78% 68%;
+    /* Separation */
+    --line: 153 21% 87%;
+    --line-strong: 154 15% 79%;
 
-    --success: 152 44% 30%;
-    --warning: 36 72% 32%;
-    --danger: 4 62% 44%;
-    --info: 205 60% 38%;
+    /* Brand — deep teal */
+    --teal: 174 80% 26%;
+    --teal-deep: 174 83% 20%;
+    --teal-soft: 163 33% 92%;
+
+    /* Warm accent — copper */
+    --copper: 27 65% 38%;
+    --copper-soft: 33 62% 92%;
+    --copper-bright: 30 85% 65%;
+
+    /* State */
+    --success: 154 60% 30%;
+    --warning: 40 100% 27%;
+    --danger: 6 76% 40%;
+    --info: 212 70% 39%;
+
+    /* Semantic aliases (shadcn-compatible, same HSL convention) */
+    --background: var(--canvas);
+    --foreground: var(--ink);
+    --card: var(--surface-raised);
+    --card-foreground: var(--ink);
+    --popover: var(--surface-raised);
+    --popover-foreground: var(--ink);
+    --primary: var(--teal);
+    --primary-hover: var(--teal-deep);
+    --primary-foreground: 0 0% 100%;
+    --secondary: var(--surface);
+    --secondary-foreground: var(--ink);
+    --muted: var(--surface);
+    --muted-foreground: var(--ink-soft);
+    --accent: var(--copper);
+    --accent-foreground: 0 0% 100%;
+    --accent-bright: var(--copper-bright);
+    --destructive: var(--danger);
+    --destructive-foreground: 0 0% 100%;
+    --border: var(--line);
+    --input: var(--line-strong);
+    --ring: var(--teal);
+    --skeleton: 153 16% 90%;
+    --overlay: 165 35% 6%;
+    --shadow-color: 165 35% 8%;
+
+    /* Deep editorial surface — stays dark in both themes */
+    --deep: var(--teal-deep);
+    --deep-foreground: 40 40% 98%;
+    --deep-muted: 40 18% 74%;
+
+    /* Chart series */
+    --chart-1: var(--teal);
+    --chart-2: var(--copper);
+    --chart-3: var(--info);
+    --chart-4: var(--success);
+    --chart-5: var(--warning);
 
     --radius: 0.625rem;
     --header-height: 4.25rem;
@@ -48,34 +97,53 @@
     --ease-exit: cubic-bezier(0.4, 0, 1, 1);
 
     /* Elevation */
-    --shadow-whisper: 0 1px 2px hsl(var(--ink) / 0.04), 0 14px 34px -22px hsl(var(--ink) / 0.28);
-    --shadow-lift: 0 28px 70px -36px hsl(var(--ink) / 0.4);
+    --shadow-whisper: 0 1px 2px hsl(var(--shadow-color) / 0.05), 0 16px 38px -26px hsl(var(--shadow-color) / 0.42);
+    --shadow-lift: 0 32px 76px -40px hsl(var(--shadow-color) / 0.58);
 
     color-scheme: light;
   }
 
   .dark {
-    --canvas: 156 11% 7%;
-    --surface: 156 10% 9%;
-    --surface-raised: 156 9% 12%;
-    --ink: 40 24% 93%;
-    --ink-soft: 40 10% 70%;
-    --ink-faint: 40 7% 55%;
-    --line: 154 8% 18%;
-    --line-strong: 154 8% 28%;
+    --canvas: 172 25% 6%;
+    --surface: 171 25% 10%;
+    --surface-raised: 169 23% 14%;
+    --surface-inset: 170 22% 9%;
+    --ink: 156 38% 95%;
+    --ink-soft: 157 11% 69%;
+    --ink-faint: 157 10% 62%;
+    --line: 164 21% 24%;
+    --line-strong: 164 18% 34%;
 
-    --teal: 168 42% 58%;
-    --teal-deep: 172 50% 82%;
-    --teal-soft: 170 20% 16%;
+    --teal: 169 47% 54%;
+    --teal-deep: 172 50% 10%;
+    --teal-soft: 169 26% 17%;
 
-    --copper: 22 62% 60%;
-    --copper-soft: 22 30% 16%;
-    --copper-bright: 26 80% 72%;
+    --copper: 33 100% 74%;
+    --copper-soft: 30 30% 17%;
+    --copper-bright: 36 100% 80%;
 
-    --success: 150 40% 58%;
-    --warning: 38 70% 60%;
-    --danger: 5 60% 62%;
-    --info: 205 55% 62%;
+    --success: 155 55% 64%;
+    --warning: 41 82% 69%;
+    --danger: 5 84% 73%;
+    --info: 212 86% 74%;
+
+    --primary-hover: 168 32% 67%;
+    --primary-foreground: 174 60% 8%;
+    --accent-foreground: 30 60% 12%;
+    --destructive-foreground: 6 60% 10%;
+    --skeleton: 168 16% 18%;
+    --overlay: 170 40% 3%;
+    --shadow-color: 170 45% 2%;
+
+    --deep: 172 50% 10%;
+    --deep-foreground: 156 38% 95%;
+    --deep-muted: 157 11% 69%;
+
+    --chart-1: 169 47% 54%;
+    --chart-2: 33 100% 74%;
+    --chart-3: 212 86% 74%;
+    --chart-4: 155 55% 64%;
+    --chart-5: 41 82% 69%;
 
     color-scheme: dark;
   }
@@ -92,6 +160,7 @@
   body {
     @apply bg-canvas font-sans text-ink antialiased;
     font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
+    font-optical-sizing: auto;
     text-rendering: optimizeLegibility;
   }
 
@@ -159,8 +228,47 @@
     box-shadow: var(--shadow-whisper);
   }
 
+  .surface-card {
+    @apply rounded-xl border border-line bg-surface-raised;
+    box-shadow: var(--shadow-whisper);
+    transition:
+      border-color var(--duration-base) var(--ease-atlas),
+      box-shadow var(--duration-base) var(--ease-atlas),
+      transform var(--duration-base) var(--ease-atlas);
+  }
+
+  .surface-card:hover {
+    @apply border-line-strong;
+    box-shadow: var(--shadow-lift);
+  }
+
   .inset-panel {
     @apply rounded-lg border border-line bg-surface;
+  }
+
+  .aura-mesh {
+    background-color: hsl(var(--canvas));
+    background-image:
+      radial-gradient(ellipse 70% 55% at 12% 0%, hsl(var(--teal) / 0.10), transparent 62%),
+      radial-gradient(ellipse 55% 45% at 92% 8%, hsl(var(--copper-bright) / 0.12), transparent 60%),
+      radial-gradient(ellipse 60% 55% at 50% 100%, hsl(var(--teal) / 0.05), transparent 70%);
+  }
+
+  .dark .aura-mesh {
+    background-image:
+      radial-gradient(ellipse 70% 55% at 12% 0%, hsl(var(--teal) / 0.14), transparent 62%),
+      radial-gradient(ellipse 55% 45% at 92% 8%, hsl(var(--copper-bright) / 0.08), transparent 60%),
+      radial-gradient(ellipse 60% 55% at 50% 100%, hsl(var(--teal) / 0.06), transparent 70%);
+  }
+
+  .select-control {
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path d='M1 1l5 5 5-5' fill='none' stroke='%235B7068' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+    background-position: right 0.9rem center;
+    background-repeat: no-repeat;
+  }
+
+  .dark .select-control {
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path d='M1 1l5 5 5-5' fill='none' stroke='%23A6BBB3' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/></svg>");
   }
 
   .hairline-grid {
@@ -228,9 +336,9 @@
   .skeleton-shimmer {
     background: linear-gradient(
       90deg,
-      hsl(var(--line) / 0.5) 25%,
-      hsl(var(--line) / 0.2) 50%,
-      hsl(var(--line) / 0.5) 75%
+      hsl(var(--skeleton) / 0.75) 25%,
+      hsl(var(--skeleton) / 0.35) 50%,
+      hsl(var(--skeleton) / 0.75) 75%
     );
     background-size: 200% 100%;
     @apply animate-shimmer;
@@ -242,11 +350,11 @@
   }
 
   .textured-panel {
-    background-color: hsl(var(--teal));
+    background-color: hsl(var(--deep));
     background-image:
-      radial-gradient(circle at 18% 12%, hsl(var(--teal-deep) / 0.65), transparent 46%),
-      radial-gradient(circle at 82% 88%, hsl(var(--copper) / 0.28), transparent 52%);
-    color: hsl(var(--surface));
+      radial-gradient(circle at 16% 10%, hsl(var(--teal) / 0.55), transparent 48%),
+      radial-gradient(circle at 86% 90%, hsl(var(--copper-bright) / 0.20), transparent 54%);
+    color: hsl(var(--deep-foreground));
   }
 }
 
@@ -270,10 +378,33 @@
 }
 
 /* ============================================================
+   Theme transition — only active for the 180ms after a user
+   explicitly changes appearance. Initial paint stays instant.
+   ============================================================ */
+
+html.theme-transition,
+html.theme-transition body,
+html.theme-transition *,
+html.theme-transition *::before,
+html.theme-transition *::after {
+  transition-property: background-color, border-color, color, fill, stroke, box-shadow !important;
+  transition-duration: 180ms !important;
+  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1) !important;
+}
+
+/* ============================================================
    Motion profiles
    ============================================================ */
 
 @media (prefers-reduced-motion: reduce) {
+  html.theme-transition,
+  html.theme-transition body,
+  html.theme-transition *,
+  html.theme-transition *::before,
+  html.theme-transition *::after {
+    transition-duration: 0.01ms !important;
+  }
+
   *,
   *::before,
   *::after {

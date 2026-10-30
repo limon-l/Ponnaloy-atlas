@@ -5,20 +5,20 @@ import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "focus-ring inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-[background-color,color,border-color,transform,box-shadow] duration-fast ease-atlas disabled:pointer-events-none disabled:opacity-45 active:translate-y-px [&_svg]:pointer-events-none [&_svg]:shrink-0",
+  "focus-ring inline-flex select-none items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-[background-color,color,border-color,transform,box-shadow] duration-fast ease-atlas disabled:pointer-events-none disabled:opacity-45 active:translate-y-px [&_svg]:pointer-events-none [&_svg]:shrink-0",
   {
     variants: {
       variant: {
         primary:
-          "bg-teal text-white shadow-whisper hover:bg-teal-deep dark:text-[hsl(var(--canvas))]",
+          "bg-primary text-primary-foreground shadow-whisper hover:bg-primary-hover hover:shadow-lift",
         ink: "bg-ink text-canvas hover:bg-ink/90",
-        copper: "bg-copper text-white hover:bg-copper/90",
+        copper: "bg-copper text-accent-foreground shadow-whisper hover:bg-copper/90",
         outline:
-          "border border-line-strong bg-transparent text-ink hover:border-ink/40 hover:bg-ink/[0.035]",
+          "border border-line-strong bg-transparent text-ink hover:border-ink/30 hover:bg-ink/[0.035]",
         ghost: "text-ink hover:bg-ink/[0.06]",
         quiet: "bg-ink/[0.05] text-ink hover:bg-ink/[0.09]",
-        destructive: "bg-danger text-white hover:bg-danger/90",
-        link: "h-auto rounded-none p-0 text-teal underline-offset-4 hover:underline",
+        destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90",
+        link: "h-auto rounded-none p-0 text-primary underline-offset-4 hover:underline",
       },
       size: {
         sm: "h-9 px-3 text-[0.8125rem] [&_svg]:size-4",

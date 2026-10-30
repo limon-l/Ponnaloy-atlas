@@ -73,7 +73,13 @@ function StoreHydrator({ children }: { children: React.ReactNode }) {
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
-    <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
+    <ThemeProvider
+      attribute="class"
+      defaultTheme="system"
+      enableSystem
+      enableColorScheme
+      storageKey="ponnaloy.atlas.theme"
+    >
       <MotionProvider>
         <ToastProvider>
           <TooltipProvider delayDuration={250} skipDelayDuration={80}>

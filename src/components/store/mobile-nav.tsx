@@ -4,6 +4,7 @@ import * as React from "react";
 import Link from "next/link";
 import { ArrowUpRight, LayoutDashboard, Search, ShieldCheck } from "lucide-react";
 import { Dialog, DialogTitle, SheetContent } from "@/components/ui/dialog";
+import { ThemeSwitcher } from "@/components/theme-switcher";
 import { categories } from "@/lib/seed";
 import { useAtlasState } from "@/lib/store";
 
@@ -51,7 +52,11 @@ export function MobileNav({
             </button>
           </div>
 
-          <nav aria-label="Mobile primary" className="px-3 pb-4">
+          <div className="px-3 pb-3">
+            <ThemeSwitcher variant="inline" />
+          </div>
+
+          <nav aria-label="Mobile primary" className="border-t border-line px-3 py-4">
             {links.map((link) => (
               <Link
                 key={link.href}

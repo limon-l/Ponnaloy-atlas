@@ -2,7 +2,7 @@
 
 import { PackageSearch } from "lucide-react";
 import { EmptyState } from "@/components/empty-state";
-import { ProductCard } from "@/components/product-card";
+import { ProductCard, type ProductCardVariant } from "@/components/product-card";
 import { useSellers } from "@/lib/hooks";
 import type { Product } from "@/lib/types";
 import { cn } from "@/lib/utils";
@@ -12,11 +12,13 @@ export function ProductGrid({
   className,
   columns = 4,
   emptyAction,
+  variant,
 }: {
   products: Product[];
   className?: string;
   columns?: 2 | 3 | 4;
   emptyAction?: { label: string; href: string };
+  variant?: ProductCardVariant;
 }) {
   const sellers = useSellers();
 
@@ -44,6 +46,7 @@ export function ProductGrid({
         <ProductCard
           key={product.id}
           product={product}
+          variant={variant}
           sellerName={sellers.find((seller) => seller.id === product.sellerId)?.name}
         />
       ))}

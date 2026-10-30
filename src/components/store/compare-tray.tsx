@@ -44,7 +44,7 @@ export function CompareTray() {
               <button
                 type="button"
                 onClick={() => setCompare(state.compare.filter((id) => id !== product.id))}
-                className="focus-ring absolute inset-0 grid place-items-center bg-ink/60 text-white opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100"
+                className="focus-ring absolute inset-0 grid place-items-center bg-deep/70 text-deep-foreground opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100"
                 aria-label={`Remove ${product.name} from comparison`}
               >
                 <X className="size-3.5" aria-hidden="true" />

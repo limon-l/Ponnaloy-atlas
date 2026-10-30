@@ -28,6 +28,7 @@ import {
 import { BrandMark, Wordmark } from "@/components/brand";
 import { AccountMenu } from "@/components/store/account-menu";
 import { Notifications } from "@/components/store/notifications";
+import { ThemeSwitcher } from "@/components/theme-switcher";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogTitle, SheetContent } from "@/components/ui/dialog";
@@ -169,11 +170,11 @@ export function WorkspaceShell({
             aria-current={active ? "page" : undefined}
             className={cn(
               "focus-ring group flex items-center gap-2.5 rounded-md px-2.5 py-2 text-[0.8125rem] font-medium transition-colors",
-              active ? "bg-teal text-white shadow-whisper" : "text-ink-soft hover:bg-ink/[0.045] hover:text-ink"
+              active ? "bg-teal text-primary-foreground shadow-whisper" : "text-ink-soft hover:bg-ink/[0.045] hover:text-ink"
             )}
           >
             <item.icon
-              className={cn("size-4 shrink-0", active ? "text-white" : "text-ink-faint group-hover:text-ink")}
+              className={cn("size-4 shrink-0", active ? "text-primary-foreground" : "text-ink-faint group-hover:text-ink")}
               aria-hidden="true"
             />
             <span className="min-w-0 flex-1 truncate">{item.label}</span>
@@ -181,7 +182,7 @@ export function WorkspaceShell({
               <span
                 className={cn(
                   "tabular grid min-w-5 place-items-center rounded-full px-1.5 py-0.5 text-[0.625rem]",
-                  active ? "bg-white/20 text-white" : "bg-ink/[0.06] text-ink-soft"
+                  active ? "bg-primary-foreground/15 text-primary-foreground" : "bg-ink/[0.06] text-ink-soft"
                 )}
               >
                 {badge}
@@ -204,7 +205,7 @@ export function WorkspaceShell({
             <Wordmark />
           </Link>
           <div className="mt-4 flex items-center gap-2 rounded-md border border-line bg-surface-raised px-2.5 py-2">
-            <span className="grid size-7 shrink-0 place-items-center rounded-full bg-ink text-[0.625rem] font-semibold text-canvas">
+            <span className="grid size-7 shrink-0 place-items-center rounded-full bg-teal text-[0.625rem] font-semibold text-primary-foreground">
               {workspace === "seller" ? initials(seller?.name ?? "Seller") : "AO"}
             </span>
             <span className="min-w-0">
@@ -306,6 +307,7 @@ export function WorkspaceShell({
               <Badge variant={canEnter ? "success" : "warning"} className="mr-1 hidden sm:inline-flex">
                 {canEnter ? "Role active" : "Preview only"}
               </Badge>
+              <ThemeSwitcher className="hidden sm:grid" />
               <Notifications role={state.role} />
               <AccountMenu />
               <Link
@@ -358,7 +360,7 @@ export function WorkspaceShell({
               <Wordmark />
             </Link>
             <div className="mt-3 flex items-center gap-2 rounded-md border border-line bg-surface px-2.5 py-2">
-              <span className="grid size-7 place-items-center rounded-full bg-ink text-[0.625rem] font-semibold text-canvas">
+              <span className="grid size-7 place-items-center rounded-full bg-teal text-[0.625rem] font-semibold text-primary-foreground">
                 {workspace === "seller" ? initials(seller?.name ?? "Seller") : "AO"}
               </span>
               <span className="min-w-0">
@@ -371,6 +373,7 @@ export function WorkspaceShell({
           </div>
           <div className="flex-1 overflow-y-auto px-2.5 py-4">{navigation}</div>
           <div className="border-t border-line p-3">
+            <ThemeSwitcher variant="inline" className="mb-3" />
             <Button asChild variant="outline" size="sm" className="w-full">
               <Link href="/" onClick={() => setMobileOpen(false)}>
                 <ShoppingBag className="size-4" aria-hidden="true" /> View storefront

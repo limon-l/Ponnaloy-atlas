@@ -8,7 +8,7 @@ const Input = React.forwardRef<HTMLInputElement, React.InputHTMLAttributes<HTMLI
       type={type}
       ref={ref}
       className={cn(
-        "focus-ring flex h-11 w-full rounded-md border border-line-strong bg-surface-raised px-3.5 text-sm text-ink shadow-none transition-colors placeholder:text-ink-faint disabled:cursor-not-allowed disabled:opacity-50 aria-[invalid=true]:border-danger",
+        "focus-ring flex h-11 w-full rounded-md border border-line-strong bg-surface-raised px-3.5 text-sm text-ink shadow-none transition-[border-color,box-shadow,background-color] duration-fast placeholder:text-ink-faint hover:border-line-strong/80 disabled:cursor-not-allowed disabled:opacity-50 aria-[invalid=true]:border-danger aria-[invalid=true]:focus-visible:ring-danger",
         className
       )}
       {...props}
@@ -22,7 +22,7 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, React.TextareaHTMLAttribu
     <textarea
       ref={ref}
       className={cn(
-        "focus-ring flex min-h-24 w-full rounded-md border border-line-strong bg-surface-raised px-3.5 py-3 text-sm text-ink transition-colors placeholder:text-ink-faint disabled:cursor-not-allowed disabled:opacity-50 aria-[invalid=true]:border-danger",
+        "focus-ring flex min-h-24 w-full rounded-md border border-line-strong bg-surface-raised px-3.5 py-3 text-sm text-ink transition-[border-color,box-shadow,background-color] duration-fast placeholder:text-ink-faint hover:border-line-strong/80 disabled:cursor-not-allowed disabled:opacity-50 aria-[invalid=true]:border-danger aria-[invalid=true]:focus-visible:ring-danger",
         className
       )}
       {...props}
@@ -36,7 +36,7 @@ const Select = React.forwardRef<HTMLSelectElement, React.SelectHTMLAttributes<HT
     <select
       ref={ref}
       className={cn(
-        "focus-ring h-11 w-full appearance-none rounded-md border border-line-strong bg-surface-raised bg-[url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2212%22 height=%228%22 viewBox=%220 0 12 8%22><path d=%22M1 1l5 5 5-5%22 fill=%22none%22 stroke=%22%23555%22 stroke-width=%221.5%22/></svg>')] bg-[right_0.9rem_center] bg-no-repeat px-3.5 pr-9 text-sm text-ink transition-colors disabled:cursor-not-allowed disabled:opacity-50 aria-[invalid=true]:border-danger",
+        "focus-ring select-control h-11 w-full appearance-none rounded-md border border-line-strong bg-surface-raised px-3.5 pr-9 text-sm text-ink transition-[border-color,box-shadow,background-color] duration-fast hover:border-line-strong/80 disabled:cursor-not-allowed disabled:opacity-50 aria-[invalid=true]:border-danger aria-[invalid=true]:focus-visible:ring-danger",
         className
       )}
       {...props}

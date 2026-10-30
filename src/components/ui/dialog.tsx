@@ -17,7 +17,7 @@ const DialogOverlay = React.forwardRef<
   <DialogPrimitive.Overlay
     ref={ref}
     className={cn(
-      "fixed inset-0 z-[70] bg-ink/45 backdrop-blur-[2px] data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:animate-in data-[state=open]:fade-in-0",
+      "fixed inset-0 z-[70] bg-overlay/55 backdrop-blur-sm data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:animate-in data-[state=open]:fade-in-0",
       className
     )}
     {...props}
@@ -34,7 +34,7 @@ const DialogContent = React.forwardRef<
     <DialogPrimitive.Content
       ref={ref}
       className={cn(
-        "fixed left-1/2 top-1/2 z-[71] grid w-[calc(100vw-2rem)] max-w-lg -translate-x-1/2 -translate-y-1/2 gap-4 rounded-xl border border-line bg-surface-raised p-5 shadow-lift duration-base data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 sm:p-6",
+        "fixed left-1/2 top-1/2 z-[71] grid w-[calc(100vw-2rem)] max-w-lg -translate-x-1/2 -translate-y-1/2 gap-4 rounded-2xl border border-line bg-popover p-5 text-popover-foreground shadow-lift duration-base data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 sm:p-6",
         className
       )}
       {...props}
@@ -42,7 +42,7 @@ const DialogContent = React.forwardRef<
       {children}
       {!hideClose && (
         <DialogPrimitive.Close
-          className="focus-ring absolute right-3.5 top-3.5 rounded-md p-1.5 text-ink-faint transition-colors hover:bg-ink/[0.06] hover:text-ink"
+          className="focus-ring absolute right-3.5 top-3.5 rounded-full p-1.5 text-ink-faint transition-[background-color,color,transform] hover:bg-ink/[0.06] hover:text-ink active:scale-95"
           aria-label="Close dialog"
         >
           <X className="size-4" aria-hidden="true" />
@@ -97,7 +97,7 @@ const SheetContent = React.forwardRef<React.ElementRef<typeof DialogPrimitive.Co
       <DialogPrimitive.Content
         ref={ref}
         className={cn(
-          "fixed z-[71] flex flex-col overflow-y-auto border-line bg-surface-raised shadow-lift duration-base data-[state=closed]:animate-out data-[state=open]:animate-in",
+          "fixed z-[71] flex flex-col overflow-y-auto border-line bg-popover text-popover-foreground shadow-lift duration-base data-[state=closed]:animate-out data-[state=open]:animate-in",
           SHEET_SIDES[side],
           className
         )}

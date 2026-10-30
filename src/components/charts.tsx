@@ -44,14 +44,14 @@ export function TrendChart({
       <svg
         viewBox={`0 0 ${width} 220`}
         style={{ height }}
-        className="w-full overflow-visible"
+        className="w-full animate-fade-in overflow-visible"
         role="img"
         aria-label={`${label}. ${data.length} data points. Total ${valueOf(total)}. Peak ${valueOf(max)}.`}
       >
         <defs>
           <linearGradient id={`trend-fill-${label.replace(/[^a-z0-9]/gi, "")}`} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="hsl(var(--teal))" stopOpacity="0.24" />
-            <stop offset="100%" stopColor="hsl(var(--teal))" stopOpacity="0" />
+            <stop offset="0%" stopColor="hsl(var(--chart-1))" stopOpacity="0.28" />
+            <stop offset="100%" stopColor="hsl(var(--chart-1))" stopOpacity="0" />
           </linearGradient>
         </defs>
         {ticks.map((tick) => (
@@ -79,7 +79,7 @@ export function TrendChart({
           <path
             d={line}
             fill="none"
-            stroke="hsl(var(--teal))"
+            stroke="hsl(var(--chart-1))"
             strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -88,7 +88,7 @@ export function TrendChart({
         )}
         {points.map((point) => (
           <g key={point.date}>
-            <circle cx={point.x} cy={point.y} r="2.5" fill="hsl(var(--teal))" opacity={point.value > 0 ? 1 : 0.35}>
+            <circle cx={point.x} cy={point.y} r="2.5" fill="hsl(var(--chart-1))" opacity={point.value > 0 ? 1 : 0.35}>
               <title>{`${formatShortDate(point.date)}: ${valueOf(point.value)}`}</title>
             </circle>
           </g>
@@ -162,7 +162,7 @@ export function BarList({
           </div>
           <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-line/70">
             <div
-              className="h-full rounded-full bg-teal transition-[width] duration-slow"
+              className="h-full rounded-full bg-chart-1 transition-[width] duration-slow ease-atlas"
               style={{ width: `${Math.max(3, (item.value / max) * 100)}%` }}
             />
           </div>
@@ -255,7 +255,7 @@ export function Sparkline({ values, className }: { values: number[]; className?:
     .join(" ");
   return (
     <svg viewBox={`0 0 ${width} ${height}`} className={cn("h-8 w-28", className)} aria-hidden="true">
-      <path d={path} fill="none" stroke="hsl(var(--teal))" strokeWidth="1.5" strokeLinecap="round" />
+      <path d={path} fill="none" stroke="hsl(var(--chart-1))" strokeWidth="1.5" strokeLinecap="round" />
     </svg>
   );
 }
