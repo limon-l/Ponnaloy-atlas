@@ -14,7 +14,6 @@ interface ProductArtProps {
  */
 export function ProductArt({ art, palette, className, title }: ProductArtProps) {
   const { bg, object, secondary, accent } = palette;
-  const uid = `${art}-${object.replace("#", "")}-${bg.replace("#", "")}`;
 
   return (
     <svg
@@ -28,12 +27,12 @@ export function ProductArt({ art, palette, className, title }: ProductArtProps) 
       <rect width="400" height="400" fill={bg} />
       <circle cx="200" cy="176" r="150" fill={object} opacity="0.06" />
       <ellipse cx="205" cy="326" rx="118" ry="16" fill={secondary} opacity="0.14" />
-      <g>{renderArt(art, object, secondary, accent, uid)}</g>
+      <g>{renderArt(art, object, secondary, accent)}</g>
     </svg>
   );
 }
 
-function renderArt(art: ArtKey, object: string, secondary: string, accent: string, uid: string) {
+function renderArt(art: ArtKey, object: string, secondary: string, accent: string) {
   switch (art) {
     case "headphones":
       return (

@@ -27,6 +27,7 @@ const config: Config = {
         copper: {
           DEFAULT: "hsl(var(--copper))",
           soft: "hsl(var(--copper-soft))",
+          bright: "hsl(var(--copper-bright))",
         },
         success: "hsl(var(--success))",
         warning: "hsl(var(--warning))",
@@ -68,9 +69,17 @@ const config: Config = {
       maxWidth: {
         prose: "68ch",
       },
+      transitionDuration: {
+        instant: "var(--duration-instant)",
+        fast: "var(--duration-fast)",
+        base: "var(--duration-base)",
+        slow: "var(--duration-slow)",
+        narrative: "var(--duration-narrative)",
+      },
       transitionTimingFunction: {
         atlas: "cubic-bezier(0.22, 1, 0.36, 1)",
         entrance: "cubic-bezier(0.16, 1, 0.3, 1)",
+        exit: "cubic-bezier(0.4, 0, 1, 1)",
       },
       keyframes: {
         "accordion-down": {

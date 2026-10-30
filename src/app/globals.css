@@ -15,7 +15,7 @@
     --surface-raised: 0 0% 100%;
     --ink: 150 8% 12%;
     --ink-soft: 150 5% 32%;
-    --ink-faint: 145 4% 46%;
+    --ink-faint: 145 5% 42%;
     --line: 38 20% 86%;
     --line-strong: 38 16% 74%;
 
@@ -25,11 +25,12 @@
     --teal-soft: 170 34% 90%;
 
     /* Restrained copper accent */
-    --copper: 18 55% 48%;
+    --copper: 18 55% 41%;
     --copper-soft: 24 55% 92%;
+    --copper-bright: 26 78% 68%;
 
     --success: 152 44% 30%;
-    --warning: 36 72% 38%;
+    --warning: 36 72% 32%;
     --danger: 4 62% 44%;
     --info: 205 60% 38%;
 
@@ -69,6 +70,7 @@
 
     --copper: 22 62% 60%;
     --copper-soft: 22 30% 16%;
+    --copper-bright: 26 80% 72%;
 
     --success: 150 40% 58%;
     --warning: 38 70% 60%;
@@ -139,12 +141,12 @@
   }
 
   .editorial-link {
-    @apply relative inline-flex items-center gap-2 text-sm font-medium text-ink transition-colors duration-[var(--duration-fast)] hover:text-teal;
+    @apply relative inline-flex items-center gap-2 text-sm font-medium text-ink transition-colors duration-fast hover:text-teal;
   }
 
   .editorial-link::after {
     content: "";
-    @apply absolute -bottom-1 left-0 h-px w-full origin-left scale-x-0 bg-current transition-transform duration-[var(--duration-base)] ease-atlas;
+    @apply absolute -bottom-1 left-0 h-px w-full origin-left scale-x-0 bg-current transition-transform duration-base ease-atlas;
   }
 
   .editorial-link:hover::after,

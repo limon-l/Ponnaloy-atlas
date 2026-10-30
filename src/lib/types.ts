@@ -237,6 +237,19 @@ export interface AuditEntry {
   severity: "INFO" | "WARNING" | "CRITICAL";
 }
 
+/**
+ * Demo-configurable platform policy. In production these values live in the
+ * admin settings table and are enforced by the API, not by this client store.
+ */
+export interface PlatformSettings {
+  /** Products at or below this unit count appear in stock-risk surfaces. */
+  lowStockThreshold: number;
+  /** When false, the customer return action is rejected. */
+  allowReturns: boolean;
+  /** When false, new seller listings are auto-approved instead of queued. */
+  requireListingReview: boolean;
+}
+
 export interface Notification {
   id: string;
   title: string;
@@ -268,6 +281,10 @@ export interface AtlasState {
   notifications: Notification[];
   recentlyViewed: string[];
   compare: string[];
+  /** Demo-local audit trail. Production writes audit records server-side. */
+  audit: AuditEntry[];
+  /** Demo-local marketplace policy. Production reads and enforces this server-side. */
+  settings: PlatformSettings;
 }
 
 export interface ProductFilters {

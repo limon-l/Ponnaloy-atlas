@@ -26,9 +26,10 @@ export function Reveal({
   style,
   ...props
 }: RevealProps) {
-  const ref = React.useRef<HTMLDivElement | null>(null);
+  const ref = React.useRef<HTMLElement | null>(null);
   const [visible, setVisible] = React.useState(false);
   const reduced = useReducedMotion();
+  const Component = Tag as React.ElementType;
 
   React.useEffect(() => {
     const node = ref.current;
@@ -53,9 +54,9 @@ export function Reveal({
   }, [once]);
 
   return (
-    <Tag
-      ref={ref as React.Ref<HTMLDivElement>}
-      className={cn("transition-[opacity,transform] duration-[var(--duration-slow)] ease-entrance", className)}
+    <Component
+      ref={ref}
+      className={cn("transition-[opacity,transform] duration-slow ease-entrance", className)}
       style={{
         opacity: visible || reduced ? 1 : 0,
         transform: visible || reduced ? "none" : `translateY(${distance}px)`,
@@ -65,7 +66,7 @@ export function Reveal({
       {...props}
     >
       {children}
-    </Tag>
+    </Component>
   );
 }
 

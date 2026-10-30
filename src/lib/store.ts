@@ -2,24 +2,46 @@
 
 import { useSyncExternalStore } from "react";
 import { priceCart } from "@/lib/cart";
-import { linePrice, productById, variantFor } from "@/lib/catalog";
-import { initialAtlasState, products as seedProducts } from "@/lib/seed";
+import { applyProductEdits, linePrice, productById, variantFor } from "@/lib/catalog";
+import { initialAtlasState, products as seedProducts, sellers as seedSellers } from "@/lib/seed";
 import type {
   AtlasState,
+  AuditEntry,
   ModerationStatus,
   Order,
   OrderStatus,
   PaymentMethod,
+  PlatformSettings,
   Product,
   Role,
   Seller,
 } from "@/lib/types";
 
-const STORAGE_KEY = "ponnaloy.atlas.state.v1";
+export const STORAGE_KEY = "ponnaloy.atlas.state.v1";
 const MAX_COMPARE = 4;
 
 type StoreResult = { ok: true } | { ok: false; error: string };
 type OrderResult = { ok: true; order: Order } | { ok: false; error: string };
+
+function auditEntry(
+  action: string,
+  target: string,
+  severity: AuditEntry["severity"] = "INFO",
+  actor = "Atlas Admin (demo)"
+): AuditEntry {
+  return {
+    id: `aud-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+    at: new Date().toISOString(),
+    actor,
+    action,
+    target,
+    severity,
+  };
+}
+
+function withAudit(current: AtlasState, entry: AuditEntry): AtlasState {
+  return { ...current, audit: [entry, ...current.audit].slice(0, 80) };
+}
 
 let state: AtlasState = initialAtlasState;
 const listeners = new Set<() => void>();
@@ -31,11 +53,21 @@ function emit() {
 function persist(next: AtlasState) {
   if (typeof window === "undefined") return;
   try {
-    const { hydrated: _hydrated, ...serializable } = next;
+    const serializable: Partial<AtlasState> = { ...next };
+    delete serializable.hydrated;
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(serializable));
   } catch {
     // Storage can be unavailable in private modes; demo continues in memory.
   }
+}
+
+/**
+ * The single resolved catalogue: seeded products, created listings and any
+ * seller/admin edits. Cart, checkout and comparison must all price from this
+ * view so availability cannot disagree with the storefront.
+ */
+function resolvedCatalogue(current: AtlasState): Product[] {
+  return applyProductEdits([...current.createdProducts, ...seedProducts], current.productEdits);
 }
 
 function setState(updater: (current: AtlasState) => AtlasState) {
@@ -106,36 +138,44 @@ export function setSeller(sellerId: string) {
 /* ------------------------------------------------------------------ */
 
 export function addToCart(productId: string, variantId?: string, quantity = 1): StoreResult {
-  const product = productById(seedProducts, productId);
+  const product = productById(resolvedCatalogue(state), productId);
   if (!product) return { ok: false, error: "Product not found." };
   const variant = variantId ? variantFor(product, variantId) : product.variants[0];
   const available = variant?.stock ?? product.stock;
   if (available <= 0) return { ok: false, error: "This option is sold out." };
 
   const resolvedVariantId = variant?.id;
-  let limited = false;
+  const existing = state.cart.find(
+    (line) => line.productId === productId && line.variantId === resolvedVariantId
+  );
+  const desired = (existing?.quantity ?? 0) + quantity;
+  const nextQuantity = Math.min(available, desired);
+  const limited = nextQuantity < desired;
+
   setState((current) => {
-    const existing = current.cart.find(
-      (line) => line.productId === productId && line.variantId === resolvedVariantId
-    );
     const cart = existing
       ? current.cart.map((line) =>
           line.productId === productId && line.variantId === resolvedVariantId
-            ? { ...line, quantity: Math.min(available, line.quantity + quantity) }
+            ? { ...line, quantity: nextQuantity }
             : line
         )
-      : [...current.cart, { productId, ...(resolvedVariantId ? { variantId: resolvedVariantId } : {}), quantity: Math.min(available, quantity) }];
-    const nextQuantity = cart.find(
-      (line) => line.productId === productId && line.variantId === resolvedVariantId
-    )?.quantity;
-    limited = Boolean(nextQuantity && nextQuantity >= available && quantity > 0);
+      : [
+          ...current.cart,
+          {
+            productId,
+            ...(resolvedVariantId ? { variantId: resolvedVariantId } : {}),
+            quantity: nextQuantity,
+          },
+        ];
     return { ...current, cart };
   });
-  return limited ? { ok: false, error: "Added the maximum available quantity." } : { ok: true };
+  return limited
+    ? { ok: false, error: `Only ${available} available; your bag was updated to the maximum.` }
+    : { ok: true };
 }
 
 export function updateCartQuantity(productId: string, variantId: string | undefined, quantity: number) {
-  const product = productById(seedProducts, productId);
+  const product = productById(resolvedCatalogue(state), productId);
   const available = product
     ? variantId
       ? variantFor(product, variantId)?.stock ?? product.stock
@@ -247,7 +287,7 @@ export interface CheckoutInput {
 
 export function placeOrder(input: CheckoutInput): OrderResult {
   if (state.cart.length === 0) return { ok: false, error: "Your cart is empty." };
-  const totals = priceCart(state.cart, seedProducts, {
+  const totals = priceCart(state.cart, resolvedCatalogue(state), {
     coupon: state.coupon,
     shippingMethod: input.shippingMethod,
   });
@@ -268,7 +308,7 @@ export function placeOrder(input: CheckoutInput): OrderResult {
   const order: Order = {
     id: `ord-${number}`,
     number,
-    customerId: "c-demo",
+    customerId: "c-1",
     customerName: input.name,
     email: input.email,
     placedAt: now,
@@ -352,6 +392,15 @@ export function placeOrder(input: CheckoutInput): OrderResult {
       },
       ...current.notifications,
     ],
+    audit: [
+      auditEntry(
+        "Created demo order",
+        `${number} · ${order.lines.reduce((sum, line) => sum + line.quantity, 0)} items · ${order.total} cents`,
+        "INFO",
+        "Checkout (demo)"
+      ),
+      ...current.audit,
+    ].slice(0, 80),
   }));
 
   return { ok: true, order };
@@ -363,29 +412,43 @@ export function updateOrderStatus(
   note: string,
   actor: Order["timeline"][number]["actor"] = "SELLER"
 ): StoreResult {
-  setState((current) => ({
-    ...current,
-    orders: current.orders.map((order) =>
-      order.id === orderId
-        ? {
-            ...order,
-            status,
-            paymentStatus:
-              status === "REFUNDED" ? "REFUNDED" : status === "CANCELLED" ? "REFUNDED" : order.paymentStatus,
-            timeline: [
-              ...order.timeline,
-              { status, at: new Date().toISOString(), note, actor },
-            ],
-            ...(status === "DELIVERED" && order.shipment
-              ? { shipment: { ...order.shipment, status: "DELIVERED" as const } }
-              : {}),
-            ...(status === "SHIPPED" && order.shipment
-              ? { shipment: { ...order.shipment, status: "IN_TRANSIT" as const } }
-              : {}),
-          }
-        : order
-    ),
-  }));
+  setState((current) => {
+    const targetOrder = current.orders.find((order) => order.id === orderId);
+    const next: AtlasState = {
+      ...current,
+      orders: current.orders.map((order) =>
+        order.id === orderId
+          ? {
+              ...order,
+              status,
+              paymentStatus:
+                status === "REFUNDED" ? "REFUNDED" : status === "CANCELLED" ? "REFUNDED" : order.paymentStatus,
+              timeline: [
+                ...order.timeline,
+                { status, at: new Date().toISOString(), note, actor },
+              ],
+              ...(status === "DELIVERED" && order.shipment
+                ? { shipment: { ...order.shipment, status: "DELIVERED" as const } }
+                : {}),
+              ...(status === "SHIPPED" && order.shipment
+                ? { shipment: { ...order.shipment, status: "IN_TRANSIT" as const } }
+                : {}),
+            }
+          : order
+      ),
+    };
+    return targetOrder
+      ? withAudit(
+          next,
+          auditEntry(
+            "Updated order status",
+            `${targetOrder.number} → ${status.toLowerCase().replaceAll("_", " ")}`,
+            status === "CANCELLED" || status === "REFUNDED" ? "WARNING" : "INFO",
+            actor === "SELLER" ? "Seller (demo)" : actor === "ADMIN" ? "Atlas Admin (demo)" : actor
+          )
+        )
+      : next;
+  });
   return { ok: true };
 }
 
@@ -393,88 +456,128 @@ export function addShipment(orderId: string, carrier: string, trackingNumber: st
   if (!carrier.trim() || !trackingNumber.trim()) {
     return { ok: false, error: "Carrier and tracking number are required." };
   }
-  setState((current) => ({
-    ...current,
-    orders: current.orders.map((order) =>
-      order.id === orderId
-        ? {
-            ...order,
-            shipment: {
-              carrier: carrier.trim(),
-              trackingNumber: trackingNumber.trim(),
-              status: "LABEL_CREATED",
-              estimatedDelivery: new Date(Date.now() + 3 * 86_400_000).toISOString(),
-            },
-            status: order.status === "PROCESSING" ? "SHIPPED" : order.status,
-            timeline: [
-              ...order.timeline,
-              {
-                status: order.status === "PROCESSING" ? "SHIPPED" : order.status,
-                at: new Date().toISOString(),
-                note: `Shipment created with ${carrier.trim()} (${trackingNumber.trim()}).`,
-                actor: "SELLER",
+  setState((current) => {
+    const targetOrder = current.orders.find((order) => order.id === orderId);
+    const next: AtlasState = {
+      ...current,
+      orders: current.orders.map((order) =>
+        order.id === orderId
+          ? {
+              ...order,
+              shipment: {
+                carrier: carrier.trim(),
+                trackingNumber: trackingNumber.trim(),
+                status: "LABEL_CREATED",
+                estimatedDelivery: new Date(Date.now() + 3 * 86_400_000).toISOString(),
               },
-            ],
-          }
-        : order
-    ),
-  }));
+              status: order.status === "PROCESSING" ? "SHIPPED" : order.status,
+              timeline: [
+                ...order.timeline,
+                {
+                  status: order.status === "PROCESSING" ? "SHIPPED" : order.status,
+                  at: new Date().toISOString(),
+                  note: `Shipment created with ${carrier.trim()} (${trackingNumber.trim()}).`,
+                  actor: "SELLER",
+                },
+              ],
+            }
+          : order
+      ),
+    };
+    return targetOrder
+      ? withAudit(
+          next,
+          auditEntry(
+            "Created shipment label",
+            `${targetOrder.number} · ${carrier.trim()} · ${trackingNumber.trim()}`,
+            "INFO",
+            "Seller (demo)"
+          )
+        )
+      : next;
+  });
   return { ok: true };
 }
 
 export function requestReturn(orderId: string, reason: string): StoreResult {
+  if (!state.settings.allowReturns) {
+    return { ok: false, error: "Returns are currently disabled in platform settings." };
+  }
   if (reason.trim().length < 8) return { ok: false, error: "Please describe the return in at least 8 characters." };
-  setState((current) => ({
-    ...current,
-    orders: current.orders.map((order) =>
-      order.id === orderId
-        ? {
-            ...order,
-            returnRequest: {
-              id: `ret-${order.number}`,
-              reason: reason.trim(),
-              requestedAt: new Date().toISOString(),
-              status: "REQUESTED",
-            },
-            timeline: [
-              ...order.timeline,
-              {
-                status: order.status,
-                at: new Date().toISOString(),
-                note: `Return requested: ${reason.trim()}`,
-                actor: "CUSTOMER",
+  setState((current) => {
+    const targetOrder = current.orders.find((order) => order.id === orderId);
+    const next: AtlasState = {
+      ...current,
+      orders: current.orders.map((order) =>
+        order.id === orderId
+          ? {
+              ...order,
+              returnRequest: {
+                id: `ret-${order.number}`,
+                reason: reason.trim(),
+                requestedAt: new Date().toISOString(),
+                status: "REQUESTED",
               },
-            ],
-          }
-        : order
-    ),
-  }));
+              timeline: [
+                ...order.timeline,
+                {
+                  status: order.status,
+                  at: new Date().toISOString(),
+                  note: `Return requested: ${reason.trim()}`,
+                  actor: "CUSTOMER",
+                },
+              ],
+            }
+          : order
+      ),
+    };
+    return targetOrder
+      ? withAudit(
+          next,
+          auditEntry("Requested return", `${targetOrder.number} · ${reason.trim().slice(0, 90)}`, "WARNING", "Customer (demo)")
+        )
+      : next;
+  });
   return { ok: true };
 }
 
 export function resolveReturn(orderId: string, approve: boolean): StoreResult {
-  setState((current) => ({
-    ...current,
-    orders: current.orders.map((order) =>
-      order.id === orderId && order.returnRequest
-        ? {
-            ...order,
-            returnRequest: { ...order.returnRequest, status: approve ? "APPROVED" : "REJECTED" },
-            status: approve ? "REFUNDED" : order.status,
-            paymentStatus: approve ? "REFUNDED" : order.paymentStatus,
-            timeline: [
-              ...order.timeline,
-              {
-                status: approve ? "REFUNDED" : order.status,
-                at: new Date().toISOString(),
-                note: approve ? "Return approved; demo refund issued." : "Return request declined.",
-                actor: "ADMIN",
-              },
-            ],
-          }
-        : order
+  setState((current) => {
+    const targetOrder = current.orders.find((order) => order.id === orderId);
+    const next: AtlasState = {
+      ...current,
+      orders: current.orders.map((order) =>
+        order.id === orderId && order.returnRequest
+          ? {
+              ...order,
+              returnRequest: { ...order.returnRequest, status: approve ? "APPROVED" : "REJECTED" },
+              status: approve ? "REFUNDED" : order.status,
+              paymentStatus: approve ? "REFUNDED" : order.paymentStatus,
+              timeline: [
+                ...order.timeline,
+                {
+                  status: approve ? "REFUNDED" : order.status,
+                  at: new Date().toISOString(),
+                  note: approve ? "Return approved; demo refund issued." : "Return request declined.",
+                  actor: "ADMIN",
+                },
+              ],
+            }
+          : order
     ),
-  }));
+    };
+    return targetOrder
+      ? withAudit(
+          next,
+          auditEntry(
+            approve ? "Approved return and issued demo refund" : "Declined return request",
+            targetOrder.number,
+            approve ? "INFO" : "WARNING",
+            "Atlas Admin (demo)"
+          )
+        )
+      : next;
+  });
   return { ok: true };
 }
 
@@ -547,6 +650,7 @@ export function createProduct(input: {
 }): { ok: true; product: Product } | { ok: false; error: string } {
   if (!input.name.trim()) return { ok: false, error: "Product name is required." };
   if (input.price <= 0) return { ok: false, error: "Price must be greater than zero." };
+  const reviewRequired = state.settings.requireListingReview;
   const id = `p-session-${Date.now()}`;
   const slug = input.name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
   const product: Product = {
@@ -565,7 +669,7 @@ export function createProduct(input: {
     tags: ["draft"],
     rating: 0,
     reviewCount: 0,
-    stock: input.stock,
+    stock: 0,
     variantLabel: "Edition",
     variants: [
       {
@@ -573,7 +677,7 @@ export function createProduct(input: {
         label: "Edition",
         option: "Standard",
         priceDelta: 0,
-        stock: input.stock,
+        stock: Math.max(0, input.stock),
         swatch: "#3C5B4C",
       },
     ],
@@ -581,17 +685,27 @@ export function createProduct(input: {
       { label: "Seller", value: input.sellerId, group: "Materials" },
       { label: "Made to order", value: "Demo listing", group: "Care" },
     ],
-    highlights: ["Draft listing", "Awaiting moderation"],
+    highlights: [reviewRequired ? "Draft listing" : "Approved listing", reviewRequired ? "Awaiting moderation" : "Demo policy"],
     materials: "To be confirmed",
     care: "To be confirmed",
-    moderation: "PENDING",
+    moderation: reviewRequired ? "PENDING" : "APPROVED",
     createdAt: new Date().toISOString(),
     featured: false,
     trending: false,
     newArrival: true,
     bestseller: false,
   };
-  setState((current) => ({ ...current, createdProducts: [product, ...current.createdProducts] }));
+  setState((current) =>
+    withAudit(
+      { ...current, createdProducts: [product, ...current.createdProducts] },
+      auditEntry(
+        reviewRequired ? "Submitted listing for moderation" : "Published listing without review",
+        `${product.name} · ${input.sellerId}`,
+        reviewRequired ? "INFO" : "WARNING",
+        "Seller (demo)"
+      )
+    )
+  );
   return { ok: true, product };
 }
 
@@ -614,20 +728,31 @@ export function moderateProduct(
   moderation: ModerationStatus,
   note?: string
 ): StoreResult {
-  setState((current) => ({
-    ...current,
-    createdProducts: current.createdProducts.map((product) =>
-      product.id === productId ? { ...product, moderation, moderationNote: note } : product
-    ),
-    productEdits: {
-      ...current.productEdits,
-      [productId]: {
-        ...current.productEdits[productId],
-        moderation,
-        ...(note ? { moderationNote: note } : {}),
+  setState((current) => {
+    const product = [...current.createdProducts, ...seedProducts].find((item) => item.id === productId);
+    const next: AtlasState = {
+      ...current,
+      createdProducts: current.createdProducts.map((item) =>
+        item.id === productId ? { ...item, moderation, moderationNote: note } : item
+      ),
+      productEdits: {
+        ...current.productEdits,
+        [productId]: {
+          ...current.productEdits[productId],
+          moderation,
+          ...(note ? { moderationNote: note } : {}),
+        },
       },
-    },
-  }));
+    };
+    return withAudit(
+      next,
+      auditEntry(
+        moderation === "APPROVED" ? "Approved listing" : moderation === "REJECTED" ? "Rejected listing" : "Returned listing to moderation",
+        `${product?.name ?? productId}${note ? ` · ${note.slice(0, 90)}` : ""}`,
+        moderation === "REJECTED" ? "WARNING" : "INFO"
+      )
+    );
+  });
   return { ok: true };
 }
 
@@ -635,10 +760,72 @@ export function updateSeller(sellerId: string, patch: Partial<Seller>): StoreRes
   if (patch.commissionRate !== undefined && (patch.commissionRate < 0 || patch.commissionRate > 0.5)) {
     return { ok: false, error: "Commission must be between 0% and 50%." };
   }
-  setState((current) => ({
-    ...current,
-    sellerEdits: { ...current.sellerEdits, [sellerId]: { ...current.sellerEdits[sellerId], ...patch } },
-  }));
+  setState((current) => {
+    const seller = seedSellers.find((item) => item.id === sellerId);
+    const next: AtlasState = {
+      ...current,
+      sellerEdits: { ...current.sellerEdits, [sellerId]: { ...current.sellerEdits[sellerId], ...patch } },
+    };
+    const changes = [
+      patch.commissionRate !== undefined ? `commission ${Math.round(patch.commissionRate * 100)}%` : null,
+      patch.status ? `status ${patch.status.toLowerCase()}` : null,
+      patch.name ? "profile details" : null,
+      patch.fulfilmentSlaHours !== undefined ? `SLA ${patch.fulfilmentSlaHours}h` : null,
+    ].filter(Boolean);
+    return withAudit(
+      next,
+      auditEntry(
+        patch.commissionRate !== undefined || patch.status ? "Updated seller governance" : "Updated seller profile",
+        `${seller?.name ?? sellerId}${changes.length ? ` · ${changes.join(", ")}` : ""}`,
+        patch.status === "SUSPENDED" ? "CRITICAL" : "INFO"
+      )
+    );
+  });
+  return { ok: true };
+}
+
+/* ------------------------------------------------------------------ */
+/* Audit                                                               */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Records a demo-local audit event. Production audit writes belong on the
+ * server; this exists so admin settings and governance actions are visible in
+ * the same trail as orders, returns and moderation.
+ */
+export function logAudit(
+  action: string,
+  target: string,
+  severity: AuditEntry["severity"] = "INFO",
+  actor = "Atlas Admin (demo)"
+) {
+  setState((current) => withAudit(current, auditEntry(action, target, severity, actor)));
+}
+
+/* ------------------------------------------------------------------ */
+/* Platform settings                                                   */
+/* ------------------------------------------------------------------ */
+
+export function updatePlatformSettings(patch: Partial<PlatformSettings>): StoreResult {
+  if (
+    patch.lowStockThreshold !== undefined &&
+    (!Number.isFinite(patch.lowStockThreshold) || patch.lowStockThreshold < 0 || patch.lowStockThreshold > 100)
+  ) {
+    return { ok: false, error: "Low-stock threshold must be between 0 and 100 units." };
+  }
+  setState((current) => {
+    const changes = [
+      patch.lowStockThreshold !== undefined ? `low stock at ${patch.lowStockThreshold} units` : null,
+      patch.allowReturns !== undefined ? `returns ${patch.allowReturns ? "enabled" : "disabled"}` : null,
+      patch.requireListingReview !== undefined
+        ? `listing review ${patch.requireListingReview ? "required" : "waived"}`
+        : null,
+    ].filter(Boolean);
+    return withAudit(
+      { ...current, settings: { ...current.settings, ...patch } },
+      auditEntry("Updated platform settings", changes.join(" · ") || "No effective change", "WARNING")
+    );
+  });
   return { ok: true };
 }
 
@@ -684,7 +871,7 @@ export function notifySeller(title: string, body: string, href: string) {
 }
 
 export function cartLinePrice(productId: string, variantId?: string): number {
-  const product = productById(seedProducts, productId);
+  const product = productById(resolvedCatalogue(state), productId);
   if (!product) return 0;
   return linePrice(product, variantId);
 }

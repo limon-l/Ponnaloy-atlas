@@ -1,5 +1,5 @@
 import { DEMO_NOW, products, sellers } from "@/lib/seed";
-import type { Order, OrderStatus, SeriesPoint } from "@/lib/types";
+import type { Order, OrderStatus, Product, SeriesPoint } from "@/lib/types";
 
 const MS_DAY = 86_400_000;
 const REVENUE_STATUSES: OrderStatus[] = [
@@ -166,8 +166,8 @@ export function fulfilmentQueue(orders: Order[], sellerId?: string): Order[] {
     .sort((a, b) => Date.parse(a.placedAt) - Date.parse(b.placedAt));
 }
 
-export function lowStockProducts(threshold = 6) {
-  return products
+export function lowStockProducts(threshold = 6, catalogue: Product[] = products) {
+  return catalogue
     .filter((product) => product.moderation === "APPROVED")
     .map((product) => ({
       product,

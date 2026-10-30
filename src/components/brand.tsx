@@ -21,14 +21,33 @@ export function BrandMark({ className, size = 28 }: { className?: string; size?:
   );
 }
 
-export function Wordmark({ compact = false }: { compact?: boolean }) {
+export function Wordmark({
+  compact = false,
+  inverted = false,
+  compactOnMobile = false,
+}: {
+  compact?: boolean;
+  inverted?: boolean;
+  compactOnMobile?: boolean;
+}) {
   return (
     <span className="flex items-baseline gap-2">
-      <span className="font-display text-[1.35rem] font-medium leading-none tracking-[-0.04em] text-ink">
+      <span
+        className={cn(
+          "font-display text-[1.35rem] font-medium leading-none tracking-[-0.04em]",
+          inverted ? "text-white" : "text-ink"
+        )}
+      >
         Ponnaloy
-      </span>
+      </span>{" "}
       {!compact && (
-        <span className="font-mono text-[0.5625rem] uppercase leading-none tracking-[0.32em] text-copper">
+        <span
+          className={cn(
+            "font-mono text-[0.5625rem] uppercase leading-none tracking-[0.32em]",
+            inverted ? "text-copper-bright" : "text-copper",
+            compactOnMobile && "hidden sm:inline"
+          )}
+        >
           Atlas
         </span>
       )}

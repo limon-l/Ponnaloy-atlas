@@ -1409,7 +1409,7 @@ function line(productId: string, variantId: string | undefined, quantity: number
 }
 
 function timelineFor(status: OrderStatus, placedAt: string, seller: boolean): Order["timeline"] {
-  const base: Array<{ status: OrderStatus; note: string; actor: "SYSTEM" | "SELLER" | "CUSTOMER" }> = [
+  const base: Array<Omit<Order["timeline"][number], "at">> = [
     { status: "PENDING", note: "Order placed. Simulated payment authorised.", actor: "CUSTOMER" },
     { status: "CONFIRMED", note: "Payment captured in demo ledger.", actor: "SYSTEM" },
     { status: "PROCESSING", note: "Seller accepted the order and began fulfilment.", actor: "SELLER" },
@@ -1780,11 +1780,11 @@ export const auditLog: AuditEntry[] = [
 export const seedNotifications: Notification[] = [
   {
     id: "notif-1",
-    title: "Order ATL-1043 is processing",
-    body: "Field Notes Supply has accepted your order and is preparing dispatch.",
+    title: "Order ATL-1042 is delivered",
+    body: "Your Aria Over-Ear and Halo Table Lamp were delivered. Tell us how they settled in.",
     at: daysAgo(0, 8),
     read: false,
-    href: "/orders/ord-ATL-1043",
+    href: "/orders/ord-ATL-1042",
     audience: "CUSTOMER",
   },
   {
@@ -1808,13 +1808,13 @@ export const seedNotifications: Notification[] = [
 ];
 
 export const initialAtlasState: AtlasState = {
-  version: 1,
+  version: 3,
   hydrated: false,
   role: "CUSTOMER",
   sellerId: "sel-kestrel",
   cart: [],
   wishlist: ["p-throw", "p-journal"],
-  orders: [],
+  orders,
   productEdits: {},
   sellerEdits: {},
   createdProducts: [],
@@ -1822,6 +1822,12 @@ export const initialAtlasState: AtlasState = {
   notifications: seedNotifications,
   recentlyViewed: [],
   compare: [],
+  audit: auditLog,
+  settings: {
+    lowStockThreshold: 6,
+    allowReturns: true,
+    requireListingReview: true,
+  },
 };
 
 export const seedRepository = {
