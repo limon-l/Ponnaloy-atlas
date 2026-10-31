@@ -1,149 +1,253 @@
+<div align="center">
+
 # Ponnaloy Atlas
 
-**An immersive commerce and marketplace operating system — five connected surfaces, one design system.**
+**Editorial commerce. Connected marketplace operations. One shared design system.**
 
-Atlas is a production-shaped frontend for a multi-vendor marketplace: an editorial storefront, a product exploration studio, a seller workspace, an admin command centre, and a design & motion lab. It is built as a real Next.js application with typed domain contracts, role-aware navigation, persisted interaction state, accessible charts, and an automated verification suite — not as a set of static screens.
+A multi-vendor marketplace frontend built with Next.js, React, and TypeScript, bringing product discovery, customer journeys, seller tools, and administrative workflows into one application.
 
-> **Demo mode.** The application ships with a clearly labelled synthetic data layer because the original Ponnaloy stack needs MongoDB, Redis and Docker, none of which are available in this environment. Every screen states that the catalogue, orders and analytics are demo data. **No payment is processed.** The live API adapter is implemented and documented, but it has not been exercised against a running backend.
+[Live Demo](https://ponnaloy-atlas.vercel.app/) · [Features](#features) · [Run Locally](#getting-started) · [Architecture](docs/ARCHITECTURE.md)
 
----
+![Next.js](https://img.shields.io/badge/Next.js-15.5-000000?logo=nextdotjs&logoColor=white)
+![React](https://img.shields.io/badge/React-19-149ECA?logo=react&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-Strict-3178C6?logo=typescript&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4-06B6D4?logo=tailwindcss&logoColor=white)
+![Vercel](https://img.shields.io/badge/Deployed_on-Vercel-000000?logo=vercel&logoColor=white)
 
-## What is inside
+</div>
 
-| Surface | Route | What it demonstrates |
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="artifacts/aura/home-dark.png">
+  <source media="(prefers-color-scheme: light)" srcset="artifacts/aura/home-light.png">
+  <img src="artifacts/aura/home-light.png" alt="Ponnaloy Atlas storefront with editorial product imagery, a teal and ivory palette, and marketplace navigation" width="1440">
+</picture>
+
+> **Demo application:** Atlas uses synthetic catalogue, customer, order, and analytics data. Marketplace changes persist in your browser. Sign-in and role switching are simulated, and no payment is processed. Do not enter real payment details.
+
+## Overview
+
+Atlas demonstrates the frontend of a marketplace beyond the storefront. Customers can discover and compare products, build a basket, complete a simulated checkout, and follow an order. Sellers can manage listings, inventory, and fulfilment. Administrators can moderate products, review customers, manage returns, and curate the homepage.
+
+These workflows share typed domain models, browser-persisted state, reusable components, and the **Aura design system**: ivory and deep teal in light mode, midnight forest and luminous teal in dark mode, with editorial typography and restrained motion.
+
+## Features
+
+### Storefront and customer experience
+
+- Editorial homepage with collections, category discovery, product rails, and studio profiles.
+- Search dialog with a keyboard shortcut, catalogue search, and URL-based filters.
+- Product details with variant selection, quantity controls, availability, and related products.
+- Quick view, persistent wishlist, cart drawer, and shopping basket.
+- Side-by-side comparison with difference-only filtering, variant selection, keyboard reordering, and direct add-to-cart.
+- Validated demo checkout, order history, shipment timelines, return requests, and notifications.
+
+### Seller workspace
+
+- Overview metrics, revenue charts, analytics, and earnings.
+- Product creation and editing, inline inventory updates, and low-stock policies.
+- Order management, fulfilment updates, and studio settings.
+
+### Admin workspace
+
+- Catalogue moderation, product management, seller directory, and customer search.
+- Order operations, returns and refunds, financial summaries, and CSV export.
+- Homepage merchandising, analytics, audit history, and platform settings.
+
+### Design and interaction
+
+- Persistent **Light / Dark / System** appearance controls.
+- **Full / Reduced / Minimal** motion profiles, with device reduced-motion preferences respected.
+- Semantic color tokens, visible focus states, and Radix-based dialogs and drawers.
+- Responsive storefront and workspace navigation, touch-friendly controls, and scrollable data interfaces.
+- A design and motion lab for exploring typography, tokens, components, charts, and interactions.
+- Original local SVG product artwork and editorial illustrations.
+
+## Explore the application
+
+| Experience | Routes | Focus |
 | --- | --- | --- |
-| Living storefront | `/`, `/products`, `/product/[slug]`, `/collections`, `/sellers` | Editorial merchandising, mega menu, command search, quick view, wishlist, compare tray, persistent cart |
-| Product exploration studio | `/compare` | Side-by-side attribute comparison, difference-only mode, per-product variant choice, keyboard reordering, direct add-to-cart |
-| Customer journey | `/cart`, `/checkout`, `/orders`, `/orders/[id]`, `/account`, `/wishlist` | Validated checkout, order creation, shipment timeline, returns, notifications |
-| Seller command centre | `/seller/*` | Revenue and order charts, product CRUD, inline stock editing, fulfilment, earnings, settings |
-| Admin command centre | `/admin/*` | Moderation, orders and returns, catalogue, sellers, customers, finance, merchandising, analytics, audit trail, platform settings |
-| Connected journey | `/journey` | One order followed across customer, seller and admin contexts |
-| Design & motion lab | `/lab` | Tokens, type specimens, primitives, charts, motion profiles, reduced-motion behaviour |
+| Storefront and customer journeys | `/`, `/products`, `/product/[slug]`, `/collections`, `/sellers`, `/cart`, `/checkout`, `/orders`, `/account`, `/wishlist` | Discovery, purchase simulation, and post-purchase interactions |
+| Comparison studio | `/compare` | Product attributes, differences, variants, and selection |
+| Seller workspace | `/seller` and its subroutes | Listings, stock, orders, earnings, and analytics |
+| Admin command centre | `/admin` and its subroutes | Moderation, customers, finance, merchandising, and operations |
+| Design and motion lab | `/lab` | Design-system reference and interaction specimens |
 
-The seller and admin routes are role-gated. Use the account menu or the in-page role preview to switch between **Customer**, **Seller** and **Admin**. Preview switches are explicitly labelled as a demo convenience; they are not a security boundary.
+The [connected journey](https://ponnaloy-atlas.vercel.app/journey) follows an order across customer, seller, and admin contexts.
 
----
+To explore a workspace, use the account role switcher or the **Preview as seller** / **Preview as administrator** action on its entry page. These controls change the demo role; they do not provide production authentication or authorization.
 
 ## Technology
 
-- **Next.js 15.5** App Router, React 19, TypeScript 5.7 (strict)
-- **Tailwind CSS 3.4** with semantic HSL tokens and a light/dark theme
-- **Radix UI** primitives for dialog, popover, tabs, accordion, toast, select and controls
-- **Framer Motion 11** for entrance choreography and component transitions, wrapped in a motion-level provider
-- **Zod** + **React Hook Form** for checkout and workspace forms
-- **Vitest** + Testing Library for domain and store tests
-- **Playwright** + **axe-core** for end-to-end and accessibility gates
-- No chart library, no additional state manager, no CSS-in-JS runtime, no icon package beyond `lucide-react`
-
----
+| Layer | Tools |
+| --- | --- |
+| Application | Next.js 15.5 App Router, React 19, TypeScript |
+| Styling and themes | Tailwind CSS 3.4, semantic HSL variables, next-themes |
+| UI components | Radix UI, Class Variance Authority, Lucide icons |
+| Motion | Framer Motion 11, CSS transitions, IntersectionObserver |
+| Forms and validation | React Hook Form, Zod |
+| State | React `useSyncExternalStore`, local component state, URL search parameters |
+| Charts and artwork | Custom SVG components |
+| Testing | Vitest, Testing Library, Playwright, axe-core |
+| Hosting | Vercel |
 
 ## Getting started
 
+### Requirements
+
+- Node.js **20 or later**.
+- [pnpm](https://pnpm.io/).
+
+### Install and run
+
 ```bash
-pnpm install
-pnpm dev            # http://localhost:3000
+git clone https://github.com/limon-l/Ponnaloy-atlas.git
+cd Ponnaloy-atlas
+pnpm install --frozen-lockfile
+pnpm dev
 ```
 
-Production verification:
+Open [localhost:3000](http://localhost:3000). The default demo requires no environment variables, database, backend service, or payment credentials.
+
+For a local production server:
 
 ```bash
-pnpm typecheck      # tsc --noEmit
-pnpm lint           # next lint
-pnpm test           # vitest run
-pnpm build          # production build
-pnpm e2e:install    # once, installs Chromium
-pnpm e2e:ci         # build + Playwright against `next start`
-pnpm perf:lab       # lab LCP/CLS/transfer measurement (server on :3100)
+pnpm build
+pnpm start
 ```
 
-`pnpm e2e` alone reuses an existing production server on port 3000; `pnpm e2e:ci` performs a clean build first.
+### Try a complete workflow
 
-### Demo state
+1. Browse the catalogue, open a product, and choose a variant.
+2. Add it to the bag and continue through the simulated checkout.
+3. Use `4242 4242 4242 4242` if exploring the demo card form; no charge is made.
+4. Open the resulting order, then explore seller and admin workflows through role preview.
+5. Change an inventory value or homepage feature selection and revisit the storefront to see the shared state update.
 
-Demo state lives in `localStorage` under `ponnaloy.atlas.state.v1` and is versioned (`version: 3`). Older snapshots are discarded. **Admin → Settings → Reset demo** returns the application to its seeded state.
+### Demo data and reset
 
-- Customer identity: **Amara Okafor** (`c-1`)
-- Seed catalogue: 25 products (22 approved, 3 awaiting moderation), 7 studios, 60 orders
-- Checkout card: `4242 4242 4242 4242` — a demo value, never transmitted or stored
-- Demo clock: `DEMO_NOW = 2026-10-29T09:00:00.000Z`
+The initial dataset contains **25 products** (22 approved and 3 awaiting moderation), **7 studios**, and **60 orders**. The demo customer is **Amara Okafor**. Seeded dates use a fixed demo clock, so they are not a live view of current trading activity.
 
-### Live API mode
+Marketplace state is stored locally under `ponnaloy.atlas.state.v1`. It is isolated to each browser and origin and is not shared between visitors. Reset it through **Account → Demo data → Reset demo state** or **Admin → Settings → Reset demo**.
 
-The transport in `src/lib/api.ts` targets the verified Fastify routes (`/api/products`, `/api/orders`, `/api/auth/*`). It activates only when `NEXT_PUBLIC_ATLAS_DATA_MODE=live`; demo mode never calls it. Tokens are kept in `sessionStorage` to narrow the XSS persistence window. Production should move to `httpOnly` cookies at the API edge — this is a documented limitation, not a solved problem.
+Appearance and motion preferences are stored separately and remain after a marketplace reset.
 
----
-
-## Architecture at a glance
+## Architecture
 
 ```text
-src/app/(store)      customer routes, store layout
-src/app/seller       seller workspace + guarded layout
-src/app/admin        admin workspace + guarded layouts
-src/components/ui    design-system primitives
-src/components/store global shell: header, search, cart, compare, account, footer
-src/components/workspace  workspace shell, page headers, panels
-src/lib              domain types, seed, store, catalog, comparison, analytics,
-                     validation, API transport, hooks, utilities
-e2e                  Playwright journeys, role boundaries and axe scans
+src/
+├── app/
+│   ├── (store)/             Storefront and customer routes
+│   ├── seller/              Seller workspace and guarded layout
+│   ├── admin/               Admin workspace and guarded layouts
+│   ├── globals.css          Theme, typography, and motion tokens
+│   └── layout.tsx           Root layout, fonts, and providers
+├── components/
+│   ├── ui/                  Shared interface primitives
+│   ├── store/               Header, search, cart, account, and footer
+│   ├── workspace/           Workspace shell, metrics, and panels
+│   └── ...                  Product cards, artwork, charts, and reveals
+└── lib/                     Types, store, seed data, domain logic, and API transport
+
+e2e/                        Browser journeys and accessibility checks
+scripts/                    Local performance measurement
+artifacts/aura/              Screenshots and recorded validation results
+docs/                       Architecture, design, testing, and implementation notes
 ```
 
-State ownership is deliberately narrow: one external store for demo-persisted marketplace state (`useSyncExternalStore`), local component state for ephemeral UI, URL search params for catalogue filters, and no client-side secrets. See [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
+State ownership follows three boundaries: the external store owns persisted demo marketplace data, components own temporary interface state, and URL parameters own catalogue filtering. Shared domain utilities handle pricing, comparisons, validation, and analytics. See the [architecture guide](docs/ARCHITECTURE.md) for module boundaries and data flow.
 
----
+### API integration boundary
 
-## Verification (measured)
+[`src/lib/api.ts`](src/lib/api.ts) contains a typed request helper and endpoint wrappers for the original Ponnaloy API. **The current UI still reads from the seeded catalogue and browser store. The transport is not wired into those workflows.**
 
-| Gate | Command | Result |
+| Variable | Default | Current purpose |
 | --- | --- | --- |
-| Type checking | `pnpm typecheck` | **PASS** — no errors |
-| Linting | `pnpm lint` | **PASS** — no warnings or errors |
-| Unit / domain tests | `pnpm test` | **PASS** — 6 files, 43 tests |
-| Production build | `pnpm build` | **PASS** — 37 routes, 35 prerendered |
-| End-to-end | `playwright test` | **PASS** — 38 Chromium tests |
-| Accessibility gate | axe via Playwright | **PASS** — 14 scans, no serious/critical WCAG A/AA violations |
-| Shared JS | Next build report | 103 kB first-load shared |
+| `NEXT_PUBLIC_ATLAS_DATA_MODE` | `demo` | Sets the displayed data-mode label; setting `live` does not connect the UI to a backend |
+| `NEXT_PUBLIC_API_URL` | `http://localhost:3001` | Base URL used by the API transport when called |
 
-These are local measurements from this environment. No field Core Web Vitals data exists, no production deployment has been performed, and the live API path is **not verified**. Lab performance numbers, methodology and limitations are in [`docs/PERFORMANCE.md`](docs/PERFORMANCE.md).
+Completing live integration requires connecting data hooks and mutations, implementing real authentication and server-side permissions, and validating the backend and payment flows. These are not part of the deployed demo. Variables prefixed with `NEXT_PUBLIC_` are public client configuration and must not contain secrets.
 
----
+## Development and verification
 
-## Accessibility
+| Command | Purpose |
+| --- | --- |
+| `pnpm dev` | Start the development server |
+| `pnpm build` | Create the production build |
+| `pnpm start` | Serve a completed production build |
+| `pnpm typecheck` | Check TypeScript |
+| `pnpm lint` | Run Next.js lint checks |
+| `pnpm test` | Run unit and domain tests |
+| `pnpm test:watch` | Run Vitest in watch mode |
+| `pnpm verify` | Run type checking, lint, unit tests, and production build |
+| `pnpm e2e:install` | Install the Chromium browser for Playwright |
+| `pnpm e2e` | Run browser tests against a completed build |
+| `pnpm e2e:ci` | Build, then run the browser suite |
+| `pnpm perf:lab` | Measure local production LCP, CLS, and resource transfer |
 
-- Semantic landmarks, skip link, visible focus rings and logical heading order
-- Dialog/drawer focus management via Radix, with focus restored on close
-- Charts include screen-reader summaries and data tables where needed
-- Motion is controlled by explicit **Full / Reduced / Minimal** profiles, persisted in the demo state and combined with the OS `prefers-reduced-motion` setting
-- Automated axe scans cover storefront, lab, seller inventory, admin command centre, admin finance, admin customers, merchandising and quick view
-- Manual keyboard review procedures are documented in [`docs/TESTING.md`](docs/TESTING.md)
+For the browser suite:
 
-Automated checks are necessary but not sufficient. Atlas does not claim full WCAG conformance; the gate is scoped to serious/critical violations from axe on the tested routes.
+```bash
+pnpm e2e:install
+pnpm e2e:ci
+```
 
----
+Playwright starts the production server on port 3000 when needed and reuses an existing server outside CI. Ensure any reused server serves the build you intend to test.
+
+### Recorded validation
+
+The latest recorded local validation on **31 October 2026** includes:
+
+| Check | Result | Evidence |
+| --- | --- | --- |
+| TypeScript and production build | Passed | [Aura implementation report](docs/AURA-IMPLEMENTATION.md) |
+| Unit and domain tests | **43 passed** | [Validation record](docs/AURA-IMPLEMENTATION.md#final-validation-matrix) |
+| Chromium end-to-end suite | **55 passed** | [Browser results](artifacts/aura/browser-results.txt) |
+| Automated accessibility | **22 axe scans passed** within the browser suite | [Route checks](e2e/a11y.spec.ts) and [light/dark checks](e2e/aura.spec.ts) |
+| Responsive overflow | **28 checks passed** across 320–1920px | [Responsive results](artifacts/aura/responsive.json) |
+| Theme and motion behavior | Persistence, System updates, and reduced-motion checks passed | [Aura browser tests](e2e/aura.spec.ts) |
+
+Accessibility checks target serious and critical axe violations on the covered routes and states. They do not establish full WCAG conformance. Baseline screenshot comparisons and an exhaustive manual screen-reader review have not been performed.
+
+### Performance measurements
+
+The latest [local performance results](artifacts/aura/performance.tsv) cover six routes with desktop and mobile profiles:
+
+| Metric | Observed range |
+| --- | --- |
+| Largest Contentful Paint (LCP) | **188–824ms** |
+| Cumulative Layout Shift (CLS) | **0–0.0346** |
+| Interaction to Next Paint (INP) | Not measured |
+
+Measurements use a production build, headless Chromium, a fresh browser context per sample, and no CPU or network throttling. These are localhost lab results, not measurements of the Vercel deployment or field Core Web Vitals.
+
+To reproduce, run the server in one terminal:
+
+```bash
+pnpm build
+pnpm start -p 3100
+```
+
+Then measure from a second terminal:
+
+```bash
+pnpm perf:lab
+```
 
 ## Documentation
 
-- [`docs/AUDIT.md`](docs/AUDIT.md) — verified baseline audit of the original Ponnaloy repository
-- [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) — route map, module boundaries, state and data flow
-- [`docs/DESIGN-SYSTEM.md`](docs/DESIGN-SYSTEM.md) — tokens, typography, components, motion
-- [`docs/CASE-STUDY.md`](docs/CASE-STUDY.md) — problems, decisions, tradeoffs, limitations
-- [`docs/PERFORMANCE.md`](docs/PERFORMANCE.md) — measured lab results and budgets
-- [`docs/TESTING.md`](docs/TESTING.md) — suites, scenarios, manual procedures
-- [`docs/DEMO-SCRIPT.md`](docs/DEMO-SCRIPT.md) — walkthrough storyboard
-- [`docs/INTERVIEW-NOTES.md`](docs/INTERVIEW-NOTES.md) — engineering discussion points
+| Document | Contents |
+| --- | --- |
+| [Architecture](docs/ARCHITECTURE.md) | Routes, state ownership, domain modules, and integration boundaries |
+| [Design system](docs/DESIGN-SYSTEM.md) | Typography, tokens, components, and motion |
+| [Aura implementation](docs/AURA-IMPLEMENTATION.md) | Frontend audit, upgrade matrix, refinements, and latest validation |
+| [Testing guide](docs/TESTING.md) | Automated scenarios and manual review procedures |
+| [Performance report](docs/PERFORMANCE.md) | Earlier measurements, methodology, and layout-shift investigation; current results are linked above |
+| [Case study](docs/CASE-STUDY.md) | Design decisions, engineering tradeoffs, and project context |
+| [Demo walkthrough](docs/DEMO-SCRIPT.md) | Suggested walkthrough of the connected experiences |
+| [Original repository audit](docs/AUDIT.md) | Historical findings from the original Ponnaloy codebase |
 
----
+## Project scope
 
-## Limitations
+Atlas is a deployed frontend demonstration. Authentication, payments, financial settlements, and marketplace records are simulated. Browser state is not a backend or a shared database, and frontend role gates are not a security boundary. Production use requires a connected backend and independent verification of authentication, authorization, payments, and operational behavior.
 
-- **No live backend verification.** MongoDB, Redis and Docker are unavailable here; the app runs on its demo data layer only.
-- **No field performance data.** Lighthouse/field Core Web Vitals and deployment have not been run.
-- **Demo role switching is not authentication.** Frontend gating is a usability feature; the API must enforce ownership and permissions independently.
-- **Payments are simulated.** Financial status is modelled in the demo ledger, not processed.
-- **Product imagery is original local SVG.** There is no photography pipeline, CDN image optimisation or 3D viewer.
-- **Storybook is not included.** The `/lab` route is the living component reference instead.
-
----
-
-## Licence
-
-Portfolio project. Original code and original vector artwork. No third-party marketplace branding is used.
+Explore the application at **[ponnaloy-atlas.vercel.app](https://ponnaloy-atlas.vercel.app/)**.
