@@ -128,7 +128,7 @@ export function ProductView({ slug }: { slug: string }) {
         </nav>
       </div>
 
-      <section className="atlas-container grid gap-10 py-8 lg:grid-cols-[1.08fr_1fr] lg:gap-14 lg:py-12">
+      <section className="atlas-container grid gap-10 py-8 [&>*]:min-w-0 lg:grid-cols-[1.08fr_1fr] lg:gap-14 lg:py-12">
         <div>
           <div className="relative overflow-hidden rounded-xl border border-line bg-surface-raised">
             <div className="aspect-[4/5] sm:aspect-square lg:aspect-[4/5]">
@@ -175,7 +175,7 @@ export function ProductView({ slug }: { slug: string }) {
                 <Scale className="size-4" aria-hidden="true" />
               </button>
             </div>
-            <div className="absolute inset-x-4 bottom-4 flex items-center justify-between rounded-md border border-line/70 bg-surface-raised/80 px-3 py-2 backdrop-blur">
+            <div className="absolute inset-x-4 bottom-4 flex flex-wrap items-center justify-between gap-1 rounded-md border border-line/70 bg-surface-raised/80 px-3 py-2 backdrop-blur">
               <p className="text-2xs text-ink-faint">Original vector study · no photography</p>
               <span className="font-mono text-[0.625rem] uppercase tracking-[0.12em] text-ink-faint">Atlas / {product.category}</span>
             </div>
@@ -301,7 +301,7 @@ export function ProductView({ slug }: { slug: string }) {
             <Button size="lg" className="min-w-44 flex-1" onClick={add} disabled={stock <= 0}>
               {stock > 0 ? (
                 <>
-                  Add to bag <span className="tabular opacity-70">· {formatMoney(unitPrice * quantity)}</span>
+                  Add to bag <span className="tabular">· {formatMoney(unitPrice * quantity)}</span>
                 </>
               ) : (
                 "Sold out"

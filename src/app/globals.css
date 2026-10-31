@@ -35,12 +35,12 @@
     --teal-soft: 163 33% 92%;
 
     /* Warm accent — copper */
-    --copper: 27 65% 38%;
+    --copper: 27 65% 35%;
     --copper-soft: 33 62% 92%;
     --copper-bright: 30 85% 65%;
 
     /* State */
-    --success: 154 60% 30%;
+    --success: 154 60% 26%;
     --warning: 40 100% 27%;
     --danger: 6 76% 40%;
     --info: 212 70% 39%;
@@ -72,7 +72,7 @@
     --shadow-color: 165 35% 8%;
 
     /* Deep editorial surface — stays dark in both themes */
-    --deep: var(--teal-deep);
+    --deep: 174 60% 12%;
     --deep-foreground: 40 40% 98%;
     --deep-muted: 40 18% 74%;
 
@@ -438,5 +438,30 @@ html[data-motion="minimal"] *::after {
     background: hsl(var(--line-strong));
     border: 3px solid hsl(var(--canvas));
     border-radius: 999px;
+  }
+}
+
+/* Touch controls keep a comfortable target without enlarging desktop tables. */
+@media (pointer: coarse) {
+  button:not([role="switch"]):not([role="checkbox"]),
+  [role="tab"] {
+    min-height: 2.75rem;
+    min-width: 2.75rem;
+  }
+  input, textarea, select { font-size: max(1rem, 1em); }
+}
+
+/* Explicit motion profiles also reveal content waiting on intersection. */
+html[data-motion="reduced"] [data-aura-reveal],
+html[data-motion="minimal"] [data-aura-reveal] {
+  opacity: 1 !important;
+  transform: none !important;
+  transition-delay: 0ms !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  html [data-aura-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+    transition-delay: 0ms !important;
   }
 }

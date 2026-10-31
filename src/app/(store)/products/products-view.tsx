@@ -239,7 +239,7 @@ export function ProductsView() {
                   <Filter className="size-4" aria-hidden="true" />
                   Filters
                   {activeCount > 0 && (
-                    <span className="tabular grid size-4 place-items-center rounded-full bg-teal text-[0.5625rem] text-white">
+                    <span className="tabular grid size-4 place-items-center rounded-full bg-teal text-[0.5625rem] text-primary-foreground">
                       {activeCount}
                     </span>
                   )}

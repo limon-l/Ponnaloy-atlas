@@ -1,0 +1,142 @@
+[
+  {
+    "width": 320,
+    "route": "/",
+    "overflow": 0
+  },
+  {
+    "width": 320,
+    "route": "/products",
+    "overflow": 0
+  },
+  {
+    "width": 320,
+    "route": "/product/aria-over-ear-headphones",
+    "overflow": 0
+  },
+  {
+    "width": 320,
+    "route": "/cart",
+    "overflow": 0
+  },
+  {
+    "width": 360,
+    "route": "/",
+    "overflow": 0
+  },
+  {
+    "width": 360,
+    "route": "/products",
+    "overflow": 0
+  },
+  {
+    "width": 360,
+    "route": "/product/aria-over-ear-headphones",
+    "overflow": 0
+  },
+  {
+    "width": 360,
+    "route": "/cart",
+    "overflow": 0
+  },
+  {
+    "width": 390,
+    "route": "/",
+    "overflow": 0
+  },
+  {
+    "width": 390,
+    "route": "/products",
+    "overflow": 0
+  },
+  {
+    "width": 390,
+    "route": "/product/aria-over-ear-headphones",
+    "overflow": 0
+  },
+  {
+    "width": 390,
+    "route": "/cart",
+    "overflow": 0
+  },
+  {
+    "width": 768,
+    "route": "/",
+    "overflow": 0
+  },
+  {
+    "width": 768,
+    "route": "/products",
+    "overflow": 0
+  },
+  {
+    "width": 768,
+    "route": "/product/aria-over-ear-headphones",
+    "overflow": 0
+  },
+  {
+    "width": 768,
+    "route": "/cart",
+    "overflow": 0
+  },
+  {
+    "width": 1024,
+    "route": "/",
+    "overflow": 0
+  },
+  {
+    "width": 1024,
+    "route": "/products",
+    "overflow": 0
+  },
+  {
+    "width": 1024,
+    "route": "/product/aria-over-ear-headphones",
+    "overflow": 0
+  },
+  {
+    "width": 1024,
+    "route": "/cart",
+    "overflow": 0
+  },
+  {
+    "width": 1440,
+    "route": "/",
+    "overflow": 0
+  },
+  {
+    "width": 1440,
+    "route": "/products",
+    "overflow": 0
+  },
+  {
+    "width": 1440,
+    "route": "/product/aria-over-ear-headphones",
+    "overflow": 0
+  },
+  {
+    "width": 1440,
+    "route": "/cart",
+    "overflow": 0
+  },
+  {
+    "width": 1920,
+    "route": "/",
+    "overflow": 0
+  },
+  {
+    "width": 1920,
+    "route": "/products",
+    "overflow": 0
+  },
+  {
+    "width": 1920,
+    "route": "/product/aria-over-ear-headphones",
+    "overflow": 0
+  },
+  {
+    "width": 1920,
+    "route": "/cart",
+    "overflow": 0
+  }
+]

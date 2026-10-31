@@ -137,7 +137,7 @@ export function ProductCard({
           )}
           aria-label={`${product.name} by ${sellerName ?? product.brand}`}
         >
-          <span className="block h-full w-full transition-transform duration-[720ms] ease-atlas group-hover:scale-[1.035]">
+          <span className="block h-full w-full transition-transform duration-slow ease-atlas group-hover:scale-[1.035]">
             <ProductArt art={product.art} palette={product.palette} />
           </span>
           <span

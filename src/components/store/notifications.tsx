@@ -26,7 +26,7 @@ export function Notifications({ role }: { role: Role }) {
         >
           <Bell className="size-[1.15rem]" aria-hidden="true" />
           {unread > 0 && (
-            <span className="absolute right-2 top-2 grid min-w-4 place-items-center rounded-full bg-copper px-1 text-[0.5625rem] font-semibold leading-4 text-white">
+            <span className="absolute right-2 top-2 grid min-w-4 place-items-center rounded-full bg-copper px-1 text-[0.5625rem] font-semibold leading-4 text-accent-foreground">
               {unread > 9 ? "9+" : unread}
             </span>
           )}

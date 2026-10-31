@@ -207,7 +207,7 @@ export function AdminOrdersView() {
                 aria-pressed={filter === item.value}
                 className={cn(
                   "focus-ring rounded-full border px-2.5 py-1 text-[0.6875rem] font-medium transition-colors",
-                  filter === item.value ? "border-teal bg-teal text-white" : "border-line text-ink-soft hover:border-line-strong hover:text-ink"
+                  filter === item.value ? "border-teal bg-teal text-primary-foreground" : "border-line text-ink-soft hover:border-line-strong hover:text-ink"
                 )}
               >
                 {item.label}

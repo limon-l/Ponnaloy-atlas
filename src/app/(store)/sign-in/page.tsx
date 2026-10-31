@@ -139,7 +139,7 @@ export default function SignInPage() {
                     onChange={() => select(account)}
                     className="sr-only"
                   />
-                  <span className={cn("grid size-9 shrink-0 place-items-center rounded-full", role === account.role ? "bg-teal text-white" : "bg-ink/[0.05] text-ink-faint")}>
+                  <span className={cn("grid size-9 shrink-0 place-items-center rounded-full", role === account.role ? "bg-teal text-primary-foreground" : "bg-ink/[0.05] text-ink-faint")}>
                     <account.icon className="size-4" aria-hidden="true" />
                   </span>
                   <span className="min-w-0 flex-1">

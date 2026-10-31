@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { useReducedMotion } from "framer-motion";
+import { useMotionLevel } from "@/components/providers";
 import { cn } from "@/lib/utils";
 
 interface RevealProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -28,7 +29,9 @@ export function Reveal({
 }: RevealProps) {
   const ref = React.useRef<HTMLElement | null>(null);
   const [visible, setVisible] = React.useState(false);
-  const reduced = useReducedMotion();
+  const systemReduced = useReducedMotion();
+  const { level } = useMotionLevel();
+  const reduced = systemReduced || level !== "full";
   const Component = Tag as React.ElementType;
 
   React.useEffect(() => {
@@ -53,14 +56,17 @@ export function Reveal({
     return () => observer.disconnect();
   }, [once]);
 
+  const revealNow = visible || reduced;
+
   return (
     <Component
       ref={ref}
+      data-aura-reveal=""
       className={cn("transition-[opacity,transform] duration-slow ease-entrance", className)}
       style={{
-        opacity: visible || reduced ? 1 : 0,
-        transform: visible || reduced ? "none" : `translateY(${distance}px)`,
-        transitionDelay: `${delay}ms`,
+        opacity: revealNow ? 1 : 0,
+        transform: revealNow ? "none" : `translateY(${distance}px)`,
+        transitionDelay: reduced ? "0ms" : `${Math.min(delay, 300)}ms`,
         ...style,
       }}
       {...props}

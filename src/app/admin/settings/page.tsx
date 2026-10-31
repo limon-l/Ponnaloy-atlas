@@ -245,7 +245,7 @@ export default function AdminSettingsPage() {
                       aria-pressed={active}
                       className={cn(
                         "focus-ring inline-flex items-center justify-center gap-1.5 rounded px-2 py-1.5 text-[0.6875rem] font-medium transition-colors",
-                        active ? "bg-teal text-white" : "text-ink-soft hover:bg-ink/[0.05] hover:text-ink"
+                        active ? "bg-teal text-primary-foreground" : "text-ink-soft hover:bg-ink/[0.05] hover:text-ink"
                       )}
                     >
                       <option.icon className="size-3.5" aria-hidden="true" />
@@ -271,7 +271,7 @@ export default function AdminSettingsPage() {
                     className={cn(
                       "focus-ring rounded-md border px-2.5 py-1.5 text-[0.6875rem] font-medium transition-colors",
                       level === option.id
-                        ? "border-teal bg-teal text-white"
+                        ? "border-teal bg-teal text-primary-foreground"
                         : "border-line bg-surface text-ink-soft hover:border-line-strong hover:text-ink"
                     )}
                   >

@@ -67,10 +67,10 @@ export function AccountMenu() {
           type="button"
           className="focus-ring flex h-10 items-center gap-2 rounded-md px-1.5 text-ink-soft transition-colors hover:bg-ink/[0.05] hover:text-ink sm:px-2"
         >
-          <span className="grid size-8 place-items-center rounded-full bg-teal text-[0.6875rem] font-semibold text-white">
+          <span className="grid size-8 place-items-center rounded-full bg-teal text-[0.6875rem] font-semibold text-primary-foreground">
             {initials(name)}
           </span>
-          <span className="hidden items-center gap-1.5 md:flex">
+          <span className="hidden items-center gap-1.5 xl:flex">
             <span className="max-w-24 truncate text-xs font-medium text-ink">{name.split(" ")[0]}</span>
             <ChevronDown className="size-3 text-ink-faint" aria-hidden="true" />
           </span>
@@ -80,7 +80,7 @@ export function AccountMenu() {
       <PopoverContent className="w-[min(92vw,20rem)] p-0">
         <div className="border-b border-line px-4 py-4">
           <div className="flex items-center gap-3">
-            <span className="grid size-10 shrink-0 place-items-center rounded-full bg-teal text-xs font-semibold text-white">
+            <span className="grid size-10 shrink-0 place-items-center rounded-full bg-teal text-xs font-semibold text-primary-foreground">
               {initials(name)}
             </span>
             <div className="min-w-0">

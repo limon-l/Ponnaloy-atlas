@@ -106,7 +106,7 @@ export default function AdminProductsPage() {
                 onClick={() => setFilter(item)}
                 aria-pressed={filter === item}
                 className={`focus-ring rounded-full border px-2.5 py-1 text-[0.6875rem] font-medium capitalize transition-colors ${
-                  filter === item ? "border-teal bg-teal text-white" : "border-line text-ink-soft hover:border-line-strong hover:text-ink"
+                  filter === item ? "border-teal bg-teal text-primary-foreground" : "border-line text-ink-soft hover:border-line-strong hover:text-ink"
                 }`}
               >
                 {item.toLowerCase()} <span className="tabular ml-1 opacity-70">{counts[item]}</span>

@@ -63,7 +63,7 @@ export default function SellerAnalyticsPage() {
                 onClick={() => setRange(value)}
                 aria-pressed={range === value}
                 className={`focus-ring rounded px-2.5 py-1.5 text-[0.6875rem] font-medium transition-colors ${
-                  range === value ? "bg-teal text-white" : "text-ink-soft hover:bg-ink/[0.05]"
+                  range === value ? "bg-teal text-primary-foreground" : "text-ink-soft hover:bg-ink/[0.05]"
                 }`}
               >
                 {value}d

@@ -127,7 +127,7 @@ export default function AdminAuditPage() {
                 className={cn(
                   "focus-ring inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1.5 text-[0.6875rem] font-medium transition-colors",
                   severity === option.id
-                    ? "border-teal bg-teal text-white"
+                    ? "border-teal bg-teal text-primary-foreground"
                     : "border-line bg-surface text-ink-soft hover:border-line-strong hover:text-ink"
                 )}
               >

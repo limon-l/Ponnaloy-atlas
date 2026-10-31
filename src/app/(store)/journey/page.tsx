@@ -196,7 +196,7 @@ export default function JourneyPage() {
                     <span
                       className={cn(
                         "grid size-5 shrink-0 place-items-center rounded-full border",
-                        done ? "border-teal bg-teal text-white" : "border-white/25 text-transparent"
+                        done ? "border-teal bg-teal text-primary-foreground" : "border-white/25 text-transparent"
                       )}
                       aria-hidden="true"
                     >
@@ -241,7 +241,7 @@ export default function JourneyPage() {
                       <span
                         className={cn(
                           "relative z-10 grid size-7 shrink-0 place-items-center rounded-full border font-mono text-[0.625rem]",
-                          isActive ? "border-teal bg-teal text-white" : "border-line-strong bg-surface-raised text-ink-faint"
+                          isActive ? "border-teal bg-teal text-primary-foreground" : "border-line-strong bg-surface-raised text-ink-faint"
                         )}
                       >
                         {item.index}

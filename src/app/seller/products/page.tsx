@@ -223,7 +223,7 @@ export default function SellerProductsPage() {
                 aria-pressed={status === item}
                 className={cn(
                   "focus-ring rounded-full border px-2.5 py-1 text-[0.6875rem] font-medium capitalize transition-colors",
-                  status === item ? "border-teal bg-teal text-white" : "border-line text-ink-soft hover:border-line-strong hover:text-ink"
+                  status === item ? "border-teal bg-teal text-primary-foreground" : "border-line text-ink-soft hover:border-line-strong hover:text-ink"
                 )}
               >
                 {item.toLowerCase()} <span className="tabular ml-1 opacity-70">{counts[item]}</span>

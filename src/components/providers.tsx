@@ -26,14 +26,23 @@ function MotionProvider({ children }: { children: React.ReactNode }) {
   React.useEffect(() => {
     const query = window.matchMedia("(prefers-reduced-motion: reduce)");
     setSystemReduced(query.matches);
-    const stored = window.localStorage.getItem(STORAGE_KEY) as MotionLevel | null;
+    let stored: MotionLevel | null = null;
+    try {
+      const value = window.localStorage.getItem(STORAGE_KEY);
+      if (value === "full" || value === "reduced" || value === "minimal") stored = value;
+    } catch { /* Preferences remain usable when storage is unavailable. */ }
     const resolved = stored ?? (query.matches ? "reduced" : "full");
     setLevelState(resolved);
     document.documentElement.dataset.motion = resolved;
 
     const onChange = (event: MediaQueryListEvent) => {
       setSystemReduced(event.matches);
-      if (!window.localStorage.getItem(STORAGE_KEY)) {
+      let hasPreference = false;
+      try {
+        const value = window.localStorage.getItem(STORAGE_KEY);
+        hasPreference = value === "full" || value === "reduced" || value === "minimal";
+      } catch { /* Follow the device when storage is unavailable. */ }
+      if (!hasPreference) {
         const next = event.matches ? "reduced" : "full";
         setLevelState(next);
         document.documentElement.dataset.motion = next;
@@ -45,13 +54,13 @@ function MotionProvider({ children }: { children: React.ReactNode }) {
 
   const setLevel = React.useCallback((next: MotionLevel) => {
     setLevelState(next);
-    window.localStorage.setItem(STORAGE_KEY, next);
+    try { window.localStorage.setItem(STORAGE_KEY, next); } catch { /* Session-only preference. */ }
     document.documentElement.dataset.motion = next;
   }, []);
 
   return (
     <MotionContext.Provider value={{ level, setLevel, systemReduced }}>
-      <MotionConfig reducedMotion={level === "full" ? "never" : "always"}>
+      <MotionConfig reducedMotion={level === "full" ? "user" : "always"}>
         {children}
       </MotionConfig>
     </MotionContext.Provider>

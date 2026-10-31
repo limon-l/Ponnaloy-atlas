@@ -435,7 +435,7 @@ export default function HomePage() {
               <Reveal key={entry.title} delay={index * 60}>
                 <article className="group h-full overflow-hidden rounded-xl border border-line bg-surface-raised transition-[border-color,box-shadow] duration-300 hover:border-line-strong hover:shadow-whisper">
                   <div className="aspect-[16/10] overflow-hidden">
-                    <div className="h-full w-full transition-transform duration-[720ms] ease-atlas group-hover:scale-[1.035]">
+                    <div className="h-full w-full transition-transform duration-slow ease-atlas group-hover:scale-[1.035]">
                       <StillLifeArt palette={entry.palette} variant={entry.variant} />
                     </div>
                   </div>

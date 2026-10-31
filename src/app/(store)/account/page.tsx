@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { useTheme } from "next-themes";
+import { ThemeSwitcher } from "@/components/theme-switcher";
 import {
   ArrowRight,
   Bell,
@@ -10,12 +10,10 @@ import {
   Database,
   Heart,
   LayoutDashboard,
-  Moon,
   Package,
   RefreshCw,
   RotateCcw,
   ShieldCheck,
-  Sun,
   User,
 } from "lucide-react";
 import { RoleSwitcher } from "@/components/store/role-switcher";
@@ -35,13 +33,10 @@ export default function AccountPage() {
   const state = useAtlasState();
   const { toast } = useToast();
   const { level, setLevel, systemReduced } = useMotionLevel();
-  const { theme, setTheme } = useTheme();
-  const [mounted, setMounted] = React.useState(false);
   const [emailOptIn, setEmailOptIn] = React.useState(true);
   const [smsOptIn, setSmsOptIn] = React.useState(false);
   const [resetOpen, setResetOpen] = React.useState(false);
 
-  React.useEffect(() => setMounted(true), []);
 
   const orders = state.orders.filter((order) => order.customerId === DEMO_CUSTOMER);
   const spend = orders.filter((order) => !["CANCELLED", "REFUNDED"].includes(order.status)).reduce((sum, order) => sum + order.total, 0);
@@ -54,7 +49,7 @@ export default function AccountPage() {
           <p className="eyebrow">Your account</p>
           <div className="mt-3 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
             <div className="flex items-center gap-4">
-              <span className="grid size-16 place-items-center rounded-full bg-teal font-display text-2xl text-white">AO</span>
+              <span className="grid size-16 place-items-center rounded-full bg-teal font-display text-2xl text-primary-foreground">AO</span>
               <div>
                 <h1 className="font-display text-display-xs text-ink">Amara Okafor</h1>
                 <p className="mt-1 text-sm text-ink-soft">amara.okafor@example.com · London, UK</p>
@@ -133,7 +128,7 @@ export default function AccountPage() {
             <section aria-labelledby="preferences-heading" className="rounded-xl border border-line bg-surface-raised p-5 sm:p-6">
               <h2 id="preferences-heading" className="font-display text-xl tracking-[-0.02em] text-ink">Preferences</h2>
               <div className="mt-4 space-y-4">
-                <div className="flex items-center justify-between gap-4 border-b border-line pb-4">
+                <div className="flex flex-col items-start justify-between gap-4 border-b border-line pb-4 sm:flex-row sm:items-center">
                   <div>
                     <p className="text-sm text-ink">Motion profile</p>
                     <p className="mt-0.5 text-2xs text-ink-faint">
@@ -147,7 +142,7 @@ export default function AccountPage() {
                         type="button"
                         onClick={() => setLevel(option)}
                         aria-pressed={level === option}
-                        className={`focus-ring rounded px-2.5 py-1.5 text-2xs capitalize transition-colors ${level === option ? "bg-teal text-white" : "text-ink-soft hover:bg-ink/[0.05]"}`}
+                        className={`focus-ring rounded px-2.5 py-1.5 text-2xs capitalize transition-colors ${level === option ? "bg-teal text-primary-foreground" : "text-ink-soft hover:bg-ink/[0.05]"}`}
                       >
                         {option}
                       </button>
@@ -155,32 +150,15 @@ export default function AccountPage() {
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between gap-4 border-b border-line pb-4">
+                <div className="flex flex-col items-start justify-between gap-4 border-b border-line pb-4 sm:flex-row sm:items-center">
                   <div>
                     <p className="text-sm text-ink">Appearance</p>
-                    <p className="mt-0.5 text-2xs text-ink-faint">Light is the default; dark respects every token.</p>
+                    <p className="mt-0.5 text-2xs text-ink-faint">Choose an appearance or follow your device.</p>
                   </div>
-                  <div className="flex gap-1 rounded-md border border-line p-0.5">
-                    <button
-                      type="button"
-                      onClick={() => setTheme("light")}
-                      aria-pressed={mounted && theme === "light"}
-                      className={`focus-ring inline-flex items-center gap-1.5 rounded px-2.5 py-1.5 text-2xs ${mounted && theme === "light" ? "bg-teal text-white" : "text-ink-soft hover:bg-ink/[0.05]"}`}
-                    >
-                      <Sun className="size-3.5" aria-hidden="true" /> Light
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setTheme("dark")}
-                      aria-pressed={mounted && theme === "dark"}
-                      className={`focus-ring inline-flex items-center gap-1.5 rounded px-2.5 py-1.5 text-2xs ${mounted && theme === "dark" ? "bg-teal text-white" : "text-ink-soft hover:bg-ink/[0.05]"}`}
-                    >
-                      <Moon className="size-3.5" aria-hidden="true" /> Dark
-                    </button>
-                  </div>
+                  <ThemeSwitcher variant="inline" className="w-full sm:w-auto" />
                 </div>
 
-                <div className="flex items-center justify-between gap-4 border-b border-line pb-4">
+                <div className="flex flex-col items-start justify-between gap-4 border-b border-line pb-4 sm:flex-row sm:items-center">
                   <div>
                     <p className="text-sm text-ink">Email updates</p>
                     <p className="mt-0.5 text-2xs text-ink-faint">Sunday edit and dispatch notices.</p>

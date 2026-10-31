@@ -180,7 +180,7 @@ export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
               <button
                 type="button"
                 onClick={() => go(`/products?q=${encodeURIComponent(query.trim())}`, query.trim())}
-                className="focus-ring mt-4 inline-flex h-10 items-center gap-2 rounded-md bg-teal px-4 text-sm font-medium text-white"
+                className="focus-ring mt-4 inline-flex h-10 items-center gap-2 rounded-md bg-teal px-4 text-sm font-medium text-primary-foreground"
               >
                 Search all products <ArrowRight className="size-4" aria-hidden="true" />
               </button>

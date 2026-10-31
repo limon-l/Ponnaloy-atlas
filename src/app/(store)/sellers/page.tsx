@@ -65,7 +65,7 @@ export default function SellersPage() {
                       <span className="inline-flex items-center gap-1.5 rounded-full bg-surface-raised/90 px-2.5 py-1 text-2xs font-medium text-ink backdrop-blur">
                         <MapPin className="size-3" aria-hidden="true" /> {seller.location}
                       </span>
-                      <span className="inline-flex items-center gap-1 rounded-full bg-teal/90 px-2 py-1 text-2xs text-white backdrop-blur">
+                      <span className="inline-flex items-center gap-1 rounded-full bg-teal/90 px-2 py-1 text-2xs text-primary-foreground backdrop-blur">
                         <BadgeCheck className="size-3" aria-hidden="true" /> Approved
                       </span>
                     </span>
